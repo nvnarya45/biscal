@@ -171,13 +171,6 @@
         @media (min-width: 768px) {
             select { background-position: right 0.6rem center; padding-right: 1.8rem !important; }
         }
-
-        /* Prevent background scroll when any modal/popup is open */
-        body.modal-open {
-            overflow: hidden !important;
-            position: fixed;
-            width: 100%;
-        }
     </style>
 </head>
 <body class="text-slate-900 dark:text-slate-100 p-3 md:p-8 transition-colors duration-500 min-h-screen relative font-sans antialiased selection:bg-pink-500 selection:text-white overflow-x-hidden">
@@ -223,11 +216,11 @@
             </button>
         </div>
 
-        <!-- Navigation Links -->
-        <nav class="px-4 py-5 flex flex-col gap-1.5 overflow-y-auto" style="max-height: calc(100vh - 120px);">
+        <!-- Navigation Links (With overscroll-contain added to prevent body scroll chaining) -->
+        <nav class="px-4 py-5 flex flex-col gap-1.5 overflow-y-auto overscroll-contain" style="max-height: calc(100vh - 120px);">
             
             <!-- Home -->
-            <a href="https://www.bis.gov.in" target="_blank" onclick="closeSideMenu()"
+            <a href="https://www.bis.gov.in" target="_blank"
                class="flex items-center gap-3.5 px-4 py-3.5 rounded-2xl bg-white/50 dark:bg-white/5 hover:bg-white/80 dark:hover:bg-white/15 border border-white/60 dark:border-white/10 shadow-sm transition-all hover:scale-[1.02] group">
                 <span class="w-9 h-9 flex items-center justify-center rounded-xl bg-gradient-to-br from-[#34c759] to-[#30b852] shadow-md flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -242,7 +235,7 @@
             </a>
 
             <!-- BISLEA -->
-            <a href="https://bislea.github.io/" target="_blank" onclick="closeSideMenu()"
+            <a href="https://bislea.github.io/" target="_blank"
                class="flex items-center gap-3.5 px-4 py-3.5 rounded-2xl bg-white/50 dark:bg-white/5 hover:bg-white/80 dark:hover:bg-white/15 border border-white/60 dark:border-white/10 shadow-sm transition-all hover:scale-[1.02] group">
                 <span class="w-9 h-9 flex items-center justify-center rounded-xl bg-gradient-to-br from-[#5e5ce6] to-[#4b49c8] shadow-md flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -257,7 +250,7 @@
             </a>
 
             <!-- BIS Circular -->
-            <a href="https://www.services.bis.gov.in/php/BIS_2.0/login" target="_blank" onclick="closeSideMenu()"
+            <a href="https://www.services.bis.gov.in/php/BIS_2.0/login" target="_blank"
                class="flex items-center gap-3.5 px-4 py-3.5 rounded-2xl bg-white/50 dark:bg-white/5 hover:bg-white/80 dark:hover:bg-white/15 border border-white/60 dark:border-white/10 shadow-sm transition-all hover:scale-[1.02] group">
                 <span class="w-9 h-9 flex items-center justify-center rounded-xl bg-gradient-to-br from-[#32ade6] to-[#0a84ff] shadow-md flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -272,7 +265,7 @@
             </a>
 
             <!-- HFMS -->
-            <a href="https://iconnect.manakonline.in/" onclick="closeSideMenu()"
+            <a href="https://iconnect.manakonline.in/" target="_blank"
                class="flex items-center gap-3.5 px-4 py-3.5 rounded-2xl bg-white/50 dark:bg-white/5 hover:bg-white/80 dark:hover:bg-white/15 border border-white/60 dark:border-white/10 shadow-sm transition-all hover:scale-[1.02] group">
                 <span class="w-9 h-9 flex items-center justify-center rounded-xl bg-gradient-to-br from-[#ff9f0a] to-[#ff6b00] shadow-md flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -287,7 +280,7 @@
             </a>
 
             <!-- BIS Salary Management System -->
-            <a href="http://164.100.105.198:8076/BIS/myaccount/Login.do?module=MYACCOUNT" target="_blank" onclick="closeSideMenu()"
+            <a href="http://164.100.105.198:8076/BIS/myaccount/Login.do?module=MYACCOUNT" target="_blank"
                class="flex items-center gap-3.5 px-4 py-3.5 rounded-2xl bg-white/50 dark:bg-white/5 hover:bg-white/80 dark:hover:bg-white/15 border border-white/60 dark:border-white/10 shadow-sm transition-all hover:scale-[1.02] group">
                 <span class="w-9 h-9 flex items-center justify-center rounded-xl bg-gradient-to-br from-[#ff2a85] to-[#c9184a] shadow-md flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -329,7 +322,7 @@
 
     <!-- ===== ABOUT MODAL ===== -->
     <div id="about-modal-backdrop" class="fixed inset-0 bg-slate-900/60 backdrop-blur-2xl hidden z-[65] transition-opacity duration-500 opacity-0" onclick="closeAboutSection()"></div>
-    <div id="about-modal" class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-sm glass-panel z-[70] hidden transition-all duration-500 p-6 md:p-8 flex flex-col items-center text-center border border-white/60 dark:border-white/20 opacity-0 scale-95" style="border-radius:2rem;">
+    <div id="about-modal" class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-sm glass-panel z-[70] hidden transition-all duration-500 p-6 md:p-8 flex flex-col items-center text-center border border-white/60 dark:border-white/20 opacity-0 scale-95 overscroll-contain" style="border-radius:2rem;">
         <button onclick="closeAboutSection()" class="absolute top-4 right-4 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white bg-white/40 dark:bg-black/20 rounded-full p-2 border border-white/50 shadow-sm backdrop-blur-xl transition-all hover:scale-105">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" /></svg>
         </button>
@@ -512,7 +505,7 @@
             </div>
         </div>
         
-        <div id="modal-body-scroll" class="p-5 md:p-8 max-h-[65vh] overflow-y-auto bg-white/30 dark:bg-black/20 backdrop-blur-md">
+        <div id="modal-body-scroll" class="p-5 md:p-8 max-h-[65vh] overflow-y-auto bg-white/30 dark:bg-black/20 backdrop-blur-md overscroll-contain">
             
             <!-- Holiday Desc -->
             <div id="holiday-section" class="mb-5 md:mb-7 hidden bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl p-4 md:p-5 rounded-2xl md:rounded-[1.5rem] border border-white/50 dark:border-white/10 shadow-sm">
@@ -1232,8 +1225,8 @@
                     // Reset popup inner scroll to top for every new date
                     const modalInner = document.getElementById('modal-body-scroll');
                     if (modalInner) modalInner.scrollTop = 0;
-                    // Lock background scroll
-                    document.body.classList.add('modal-open');
+                    // Lock background scroll correctly (No position fixed)
+                    document.body.classList.add('overflow-hidden');
                     setTimeout(() => {
                         backdrop.classList.add('opacity-100');
                         content.classList.add('opacity-100', 'scale-100');
@@ -1369,7 +1362,7 @@
 
             if (backdrop) backdrop.classList.remove('hidden');
             if (profileContent) profileContent.classList.remove('hidden');
-            document.body.classList.add('modal-open');
+            document.body.classList.add('overflow-hidden'); // Lock background scroll
             setTimeout(() => {
                 if (backdrop) backdrop.classList.add('opacity-100');
                 if (profileContent) profileContent.classList.add('opacity-100', 'scale-100');
@@ -1396,7 +1389,7 @@
                 if(holidayContent) holidayContent.classList.add('hidden');
                 if(profileContent) profileContent.classList.add('hidden');
                 // Unlock background scroll
-                document.body.classList.remove('modal-open');
+                document.body.classList.remove('overflow-hidden');
             }, 400);
         }
 
@@ -1478,6 +1471,7 @@
             const drawer = document.getElementById('side-drawer');
             const overlay = document.getElementById('side-menu-overlay');
             overlay.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden'); // Lock body scroll perfectly
             requestAnimationFrame(() => {
                 overlay.classList.add('opacity-100');
                 drawer.classList.remove('-translate-x-full');
@@ -1489,6 +1483,7 @@
             const overlay = document.getElementById('side-menu-overlay');
             drawer.classList.add('-translate-x-full');
             overlay.classList.remove('opacity-100');
+            document.body.classList.remove('overflow-hidden'); // Remove body scroll lock
             setTimeout(() => overlay.classList.add('hidden'), 350);
         }
         function syncDrawerDarkMode() {
@@ -1505,11 +1500,12 @@
         }
         // ===== ABOUT MODAL FUNCTIONS =====
         function openAboutSection() {
-            closeSideMenu();
+            closeSideMenu(); // Removes scroll lock, so we re-add it below for the About modal
             const backdrop = document.getElementById('about-modal-backdrop');
             const modal = document.getElementById('about-modal');
             backdrop.classList.remove('hidden');
             modal.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden'); // Locks the background
             requestAnimationFrame(() => {
                 backdrop.classList.add('opacity-100');
                 modal.classList.add('opacity-100');
@@ -1523,6 +1519,7 @@
             backdrop.classList.remove('opacity-100');
             modal.classList.remove('opacity-100', 'scale-100');
             modal.classList.add('scale-95');
+            document.body.classList.remove('overflow-hidden'); // Unlocks the background
             setTimeout(() => { backdrop.classList.add('hidden'); modal.classList.add('hidden'); }, 400);
         }
 
@@ -1536,6 +1533,3 @@
 </body>
 
 </html>
-
-
-

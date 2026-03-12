@@ -171,6 +171,13 @@
         @media (min-width: 768px) {
             select { background-position: right 0.6rem center; padding-right: 1.8rem !important; }
         }
+
+        /* Prevent background scroll when any modal/popup is open */
+        body.modal-open {
+            overflow: hidden !important;
+            position: fixed;
+            width: 100%;
+        }
     </style>
 </head>
 <body class="text-slate-900 dark:text-slate-100 p-3 md:p-8 transition-colors duration-500 min-h-screen relative font-sans antialiased selection:bg-pink-500 selection:text-white overflow-x-hidden">
@@ -505,7 +512,7 @@
             </div>
         </div>
         
-        <div class="p-5 md:p-8 max-h-[65vh] overflow-y-auto bg-white/30 dark:bg-black/20 backdrop-blur-md">
+        <div id="modal-body-scroll" class="p-5 md:p-8 max-h-[65vh] overflow-y-auto bg-white/30 dark:bg-black/20 backdrop-blur-md">
             
             <!-- Holiday Desc -->
             <div id="holiday-section" class="mb-5 md:mb-7 hidden bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl p-4 md:p-5 rounded-2xl md:rounded-[1.5rem] border border-white/50 dark:border-white/10 shadow-sm">
@@ -660,8 +667,41 @@
         let currentOpenDateStr = "";
         let customHolidays = {};
 
-        // Admin Auth State Check
-        let isAdmin = localStorage.getItem('bis_admin') === 'true';
+        // Admin Auth State Check — sessionStorage clears automatically when tab/app is closed
+        let isAdmin = sessionStorage.getItem('bis_admin') === 'true';
+
+        // ⏱ 5-minute auto-logout timer
+        let adminAutoLogoutTimer = null;
+        const ADMIN_SESSION_MINUTES = 5;
+
+        function startAdminAutoLogout() {
+            clearAdminAutoLogout();
+            if (!isAdmin) return;
+            adminAutoLogoutTimer = setTimeout(() => {
+                if (isAdmin) {
+                    isAdmin = false;
+                    sessionStorage.removeItem('bis_admin');
+                    updateAdminPanelUI();
+                    // Show a brief notification if modal is open
+                    const notice = document.createElement('div');
+                    notice.id = 'auto-logout-notice';
+                    notice.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:9999;background:rgba(255,59,48,0.92);color:white;padding:10px 22px;border-radius:999px;font-size:12px;font-weight:900;letter-spacing:0.05em;box-shadow:0 8px 24px rgba(0,0,0,0.2);backdrop-filter:blur(20px);';
+                    notice.innerText = '🔒 Admin session expired (5 min)';
+                    document.body.appendChild(notice);
+                    setTimeout(() => { if(notice.parentNode) notice.parentNode.removeChild(notice); }, 3000);
+                }
+            }, ADMIN_SESSION_MINUTES * 60 * 1000);
+        }
+
+        function clearAdminAutoLogout() {
+            if (adminAutoLogoutTimer) {
+                clearTimeout(adminAutoLogoutTimer);
+                adminAutoLogoutTimer = null;
+            }
+        }
+
+        // Start timer on page load if already admin
+        if (isAdmin) startAdminAutoLogout();
 
         const realToday = new Date();
         let displayMonth = realToday.getMonth();
@@ -872,7 +912,8 @@
             
             if (id === 'Admin' && pwd === 'Bis@1234') {
                 isAdmin = true;
-                localStorage.setItem('bis_admin', 'true');
+                sessionStorage.setItem('bis_admin', 'true');
+                startAdminAutoLogout(); // start 5-min timer
                 const err = document.getElementById('login-error');
                 if(err) err.classList.add('hidden');
                 
@@ -888,7 +929,8 @@
 
         function handleAdminLogout() {
             isAdmin = false;
-            localStorage.removeItem('bis_admin');
+            sessionStorage.removeItem('bis_admin');
+            clearAdminAutoLogout();
             updateAdminPanelUI();
             closeModal();
         }
@@ -1187,6 +1229,11 @@
                 if (backdrop && content) {
                     backdrop.classList.remove('hidden');
                     content.classList.remove('hidden');
+                    // Reset popup inner scroll to top for every new date
+                    const modalInner = document.getElementById('modal-body-scroll');
+                    if (modalInner) modalInner.scrollTop = 0;
+                    // Lock background scroll
+                    document.body.classList.add('modal-open');
                     setTimeout(() => {
                         backdrop.classList.add('opacity-100');
                         content.classList.add('opacity-100', 'scale-100');
@@ -1322,6 +1369,7 @@
 
             if (backdrop) backdrop.classList.remove('hidden');
             if (profileContent) profileContent.classList.remove('hidden');
+            document.body.classList.add('modal-open');
             setTimeout(() => {
                 if (backdrop) backdrop.classList.add('opacity-100');
                 if (profileContent) profileContent.classList.add('opacity-100', 'scale-100');
@@ -1347,6 +1395,8 @@
                 if (backdrop) backdrop.classList.add('hidden');
                 if(holidayContent) holidayContent.classList.add('hidden');
                 if(profileContent) profileContent.classList.add('hidden');
+                // Unlock background scroll
+                document.body.classList.remove('modal-open');
             }, 400);
         }
 
@@ -1486,5 +1536,3 @@
 </body>
 
 </html>
-
-

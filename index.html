@@ -183,6 +183,197 @@
         <div class="blob blob4"></div>
     </div>
 
+    <!-- ===== HAMBURGER MENU BUTTON (Top Left) ===== -->
+    <button id="hamburger-btn" onclick="toggleSideMenu()" class="fixed top-4 left-4 z-50 p-3 rounded-full glass-button text-slate-800 dark:text-white hover:scale-105 transition-all cursor-pointer backdrop-blur-3xl shadow-md" aria-label="Open Menu">
+        <svg id="hamburger-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+    </button>
+
+    <!-- ===== SIDE MENU OVERLAY ===== -->
+    <div id="side-menu-overlay" onclick="closeSideMenu()" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[55] hidden transition-opacity duration-300 opacity-0"></div>
+
+    <!-- ===== SIDE DRAWER ===== -->
+    <div id="side-drawer" class="fixed top-0 left-0 h-full w-72 z-[60] transform -translate-x-full transition-transform duration-400 ease-[cubic-bezier(0.16,1,0.3,1)]"
+         style="background: rgba(255,255,255,0.72); backdrop-filter: blur(50px) saturate(220%); -webkit-backdrop-filter: blur(50px) saturate(220%); border-right: 1px solid rgba(255,255,255,0.8); box-shadow: 20px 0 60px -10px rgba(0,0,0,0.15);">
+        
+        <!-- Dark mode drawer style -->
+        <div class="dark-drawer-bg absolute inset-0 rounded-r-none" style="display:none;"></div>
+
+        <!-- Drawer Header -->
+        <div class="flex items-center justify-between px-6 pt-14 pb-6 border-b border-white/40 dark:border-white/10">
+            <div class="flex items-center gap-3">
+                <img src="https://image2url.com/r2/default/images/1771497947848-b83f3e87-baba-4045-9284-3cf049a2945d.png" alt="BIS Logo" class="w-8 h-8 object-contain drop-shadow-md">
+                <div>
+                    <div class="text-sm font-black text-slate-900 dark:text-white tracking-tight">BIS Portal</div>
+                    <div class="text-[9px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Quick Links</div>
+                </div>
+            </div>
+            <button onclick="closeSideMenu()" class="p-2 rounded-full bg-white/50 dark:bg-white/10 hover:bg-white/80 dark:hover:bg-white/20 border border-white/60 dark:border-white/15 shadow-sm transition-all hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-700 dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="px-4 py-5 flex flex-col gap-1.5 overflow-y-auto" style="max-height: calc(100vh - 120px);">
+            
+            <!-- Home -->
+            <a href="https://www.services.bis.gov.in/php/BIS_2.0/login" target="_blank" onclick="closeSideMenu()"
+               class="flex items-center gap-3.5 px-4 py-3.5 rounded-2xl bg-white/50 dark:bg-white/5 hover:bg-white/80 dark:hover:bg-white/15 border border-white/60 dark:border-white/10 shadow-sm transition-all hover:scale-[1.02] group">
+                <span class="w-9 h-9 flex items-center justify-center rounded-xl bg-gradient-to-br from-[#34c759] to-[#30b852] shadow-md flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 9.75L12 3l9 6.75V21a1 1 0 01-1 1H4a1 1 0 01-1-1V9.75z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 22V12h6v10" />
+                    </svg>
+                </span>
+                <div>
+                    <div class="text-sm font-black text-slate-900 dark:text-white">Home</div>
+                    <div class="text-[9px] font-semibold text-slate-400 dark:text-slate-500 truncate">BIS Services Portal</div>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400 ml-auto opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+            </a>
+
+            <!-- BISLeA -->
+            <a href="https://bislea.github.io/" target="_blank" onclick="closeSideMenu()"
+               class="flex items-center gap-3.5 px-4 py-3.5 rounded-2xl bg-white/50 dark:bg-white/5 hover:bg-white/80 dark:hover:bg-white/15 border border-white/60 dark:border-white/10 shadow-sm transition-all hover:scale-[1.02] group">
+                <span class="w-9 h-9 flex items-center justify-center rounded-xl bg-gradient-to-br from-[#5e5ce6] to-[#4b49c8] shadow-md flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                </span>
+                <div>
+                    <div class="text-sm font-black text-slate-900 dark:text-white">BISLeA</div>
+                    <div class="text-[9px] font-semibold text-slate-400 dark:text-slate-500 truncate">Learning & Examination</div>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400 ml-auto opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+            </a>
+
+            <!-- BIS Circular -->
+            <a href="https://www.services.bis.gov.in/php/BIS_2.0/login" target="_blank" onclick="closeSideMenu()"
+               class="flex items-center gap-3.5 px-4 py-3.5 rounded-2xl bg-white/50 dark:bg-white/5 hover:bg-white/80 dark:hover:bg-white/15 border border-white/60 dark:border-white/10 shadow-sm transition-all hover:scale-[1.02] group">
+                <span class="w-9 h-9 flex items-center justify-center rounded-xl bg-gradient-to-br from-[#32ade6] to-[#0a84ff] shadow-md flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                </span>
+                <div>
+                    <div class="text-sm font-black text-slate-900 dark:text-white">BIS Circular</div>
+                    <div class="text-[9px] font-semibold text-slate-400 dark:text-slate-500 truncate">Official Circulars</div>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400 ml-auto opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+            </a>
+
+            <!-- HFMS -->
+            <a href="http://164.100.105.198:8076/BIS/myaccount/Login.do?module=MYACCOUNT" onclick="closeSideMenu()"
+               class="flex items-center gap-3.5 px-4 py-3.5 rounded-2xl bg-white/50 dark:bg-white/5 hover:bg-white/80 dark:hover:bg-white/15 border border-white/60 dark:border-white/10 shadow-sm transition-all hover:scale-[1.02] group">
+                <span class="w-9 h-9 flex items-center justify-center rounded-xl bg-gradient-to-br from-[#ff9f0a] to-[#ff6b00] shadow-md flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                </span>
+                <div>
+                    <div class="text-sm font-black text-slate-900 dark:text-white">HFMS</div>
+                    <div class="text-[9px] font-semibold text-slate-400 dark:text-slate-500 truncate">Holiday & Facility Mgmt</div>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400 ml-auto opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+            </a>
+
+            <!-- BIS Salary Management System -->
+            <a href="http://164.100.105.198:8076/BIS/myaccount/Login.do?module=MYACCOUNT" target="_blank" onclick="closeSideMenu()"
+               class="flex items-center gap-3.5 px-4 py-3.5 rounded-2xl bg-white/50 dark:bg-white/5 hover:bg-white/80 dark:hover:bg-white/15 border border-white/60 dark:border-white/10 shadow-sm transition-all hover:scale-[1.02] group">
+                <span class="w-9 h-9 flex items-center justify-center rounded-xl bg-gradient-to-br from-[#ff2a85] to-[#c9184a] shadow-md flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </span>
+                <div>
+                    <div class="text-sm font-black text-slate-900 dark:text-white">BIS Salary Mgmt</div>
+                    <div class="text-[9px] font-semibold text-slate-400 dark:text-slate-500 truncate">Salary Management System</div>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400 ml-auto opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+            </a>
+
+            <!-- Divider -->
+            <div class="my-2 border-t border-white/40 dark:border-white/10"></div>
+
+            <!-- About -->
+            <button onclick="openAboutSection()" 
+               class="flex items-center gap-3.5 px-4 py-3.5 rounded-2xl bg-white/50 dark:bg-white/5 hover:bg-white/80 dark:hover:bg-white/15 border border-white/60 dark:border-white/10 shadow-sm transition-all hover:scale-[1.02] w-full text-left group">
+                <span class="w-9 h-9 flex items-center justify-center rounded-xl bg-gradient-to-br from-[#64d2ff] to-[#5e5ce6] shadow-md flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </span>
+                <div>
+                    <div class="text-sm font-black text-slate-900 dark:text-white">About</div>
+                    <div class="text-[9px] font-semibold text-slate-400 dark:text-slate-500 truncate">App Info & Version</div>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400 ml-auto opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+            </button>
+        </nav>
+
+        <!-- Drawer Footer -->
+        <div class="absolute bottom-0 left-0 right-0 px-5 py-4 border-t border-white/30 dark:border-white/10 text-center">
+            <p class="text-[9px] text-slate-400 dark:text-slate-500 font-semibold uppercase tracking-widest">Bureau of Indian Standards</p>
+            <p class="text-[8px] text-slate-300 dark:text-slate-600 mt-0.5">© 2025 · v2.0</p>
+        </div>
+    </div>
+
+    <!-- ===== ABOUT MODAL ===== -->
+    <div id="about-modal-backdrop" class="fixed inset-0 bg-slate-900/60 backdrop-blur-2xl hidden z-[65] transition-opacity duration-500 opacity-0" onclick="closeAboutSection()"></div>
+    <div id="about-modal" class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-sm glass-panel z-[70] hidden transition-all duration-500 p-6 md:p-8 flex flex-col items-center text-center border border-white/60 dark:border-white/20 opacity-0 scale-95" style="border-radius:2rem;">
+        <button onclick="closeAboutSection()" class="absolute top-4 right-4 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white bg-white/40 dark:bg-black/20 rounded-full p-2 border border-white/50 shadow-sm backdrop-blur-xl transition-all hover:scale-105">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+
+        <!-- BIS Logo -->
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#0a84ff] via-[#5e5ce6] to-[#ff2a85] p-0.5 mb-4 shadow-lg">
+            <div class="w-full h-full rounded-[14px] bg-white dark:bg-slate-900 flex items-center justify-center overflow-hidden">
+                <img src="https://image2url.com/r2/default/images/1771497947848-b83f3e87-baba-4045-9284-3cf049a2945d.png" alt="BIS Logo" class="w-10 h-10 object-contain">
+            </div>
+        </div>
+
+        <h2 class="text-xl font-black text-slate-900 dark:text-white tracking-tight">BIS Calendar</h2>
+        <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mt-1 mb-5">Bureau of Indian Standards</p>
+
+        <div class="w-full flex flex-col gap-2.5 text-left mb-5">
+            <div class="flex items-start gap-3 bg-white/50 dark:bg-white/5 px-4 py-3 rounded-xl border border-white/60 dark:border-white/10">
+                <span class="text-lg">📅</span>
+                <div>
+                    <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest">What is this?</div>
+                    <div class="text-xs font-semibold text-slate-800 dark:text-slate-200 mt-0.5">An interactive holiday calendar for BIS employees — view Gazetted &amp; Restricted holidays, add personal notes, and access key BIS portals.</div>
+                </div>
+            </div>
+            <div class="flex items-start gap-3 bg-white/50 dark:bg-white/5 px-4 py-3 rounded-xl border border-white/60 dark:border-white/10">
+                <span class="text-lg">🚀</span>
+                <div>
+                    <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Features</div>
+                    <div class="text-xs font-semibold text-slate-800 dark:text-slate-200 mt-0.5">Live Panchang data · Firebase cloud notes · Dark mode · Admin holiday editor · Swipe navigation</div>
+                </div>
+            </div>
+            <div class="flex items-start gap-3 bg-white/50 dark:bg-white/5 px-4 py-3 rounded-xl border border-white/60 dark:border-white/10">
+                <span class="text-lg">👨‍💻</span>
+                <div>
+                    <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Designed by</div>
+                    <div class="text-xs font-semibold text-slate-800 dark:text-slate-200 mt-0.5">Nvn Arya · BIS Employee</div>
+                </div>
+            </div>
+            <div class="flex items-start gap-3 bg-white/50 dark:bg-white/5 px-4 py-3 rounded-xl border border-white/60 dark:border-white/10">
+                <span class="text-lg">🔖</span>
+                <div>
+                    <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Version</div>
+                    <div class="text-xs font-semibold text-slate-800 dark:text-slate-200 mt-0.5">v2.0 · 2025 · Built with ❤️ for BIS</div>
+                </div>
+            </div>
+        </div>
+
+        <a href="https://www.instagram.com/i_am_nvi?igsh=ZHdha2UxYWNyNjhy" target="_blank" class="flex items-center justify-center gap-2 w-full px-5 py-3 bg-gradient-to-r from-[#ff2a85] to-[#5e5ce6] text-white rounded-xl text-xs font-bold shadow-md hover:scale-105 transition-transform">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            Follow Creator on Instagram
+        </a>
+    </div>
+
     <!-- iOS Control Center style dark mode toggle -->
     <button onclick="toggleDarkMode()" class="fixed top-4 right-4 z-50 p-3 rounded-full glass-button text-slate-800 dark:text-white hover:scale-105 transition-all cursor-pointer backdrop-blur-3xl shadow-md">
         <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 hidden dark:block drop-shadow-sm" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1181,8 +1372,16 @@
             if (event.key === "Escape") {
                 closeModal();
                 closeImageExpander();
+                closeSideMenu();
+                closeAboutSection();
             }
         });
+
+        // Sync drawer dark mode when toggled
+        const _bisOrigToggleDark = window.toggleDarkMode;
+        if(_bisOrigToggleDark) {
+            window.toggleDarkMode = function() { _bisOrigToggleDark(); setTimeout(syncDrawerDarkMode, 60); };
+        }
 
         // 📱 SWIPE GESTURES LOGIC
         let touchStartX = 0;
@@ -1219,13 +1418,71 @@
             }
         }
 
+        // ===== HAMBURGER / SIDE MENU FUNCTIONS =====
+        function toggleSideMenu() {
+            const drawer = document.getElementById('side-drawer');
+            const isOpen = !drawer.classList.contains('-translate-x-full');
+            if (isOpen) { closeSideMenu(); } else { openSideMenu(); }
+        }
+        function openSideMenu() {
+            const drawer = document.getElementById('side-drawer');
+            const overlay = document.getElementById('side-menu-overlay');
+            overlay.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                overlay.classList.add('opacity-100');
+                drawer.classList.remove('-translate-x-full');
+            });
+            syncDrawerDarkMode();
+        }
+        function closeSideMenu() {
+            const drawer = document.getElementById('side-drawer');
+            const overlay = document.getElementById('side-menu-overlay');
+            drawer.classList.add('-translate-x-full');
+            overlay.classList.remove('opacity-100');
+            setTimeout(() => overlay.classList.add('hidden'), 350);
+        }
+        function syncDrawerDarkMode() {
+            const drawer = document.getElementById('side-drawer');
+            if (!drawer) return;
+            const isDark = document.documentElement.classList.contains('dark');
+            if (isDark) {
+                drawer.style.background = 'rgba(20,20,22,0.82)';
+                drawer.style.borderRight = '1px solid rgba(255,255,255,0.12)';
+            } else {
+                drawer.style.background = 'rgba(255,255,255,0.72)';
+                drawer.style.borderRight = '1px solid rgba(255,255,255,0.8)';
+            }
+        }
+        // ===== ABOUT MODAL FUNCTIONS =====
+        function openAboutSection() {
+            closeSideMenu();
+            const backdrop = document.getElementById('about-modal-backdrop');
+            const modal = document.getElementById('about-modal');
+            backdrop.classList.remove('hidden');
+            modal.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                backdrop.classList.add('opacity-100');
+                modal.classList.add('opacity-100');
+                modal.classList.remove('scale-95');
+                modal.classList.add('scale-100');
+            });
+        }
+        function closeAboutSection() {
+            const backdrop = document.getElementById('about-modal-backdrop');
+            const modal = document.getElementById('about-modal');
+            backdrop.classList.remove('opacity-100');
+            modal.classList.remove('opacity-100', 'scale-100');
+            modal.classList.add('scale-95');
+            setTimeout(() => { backdrop.classList.add('hidden'); modal.classList.add('hidden'); }, 400);
+        }
+
         window.onload = () => {
             populateYearPicker();
             fetchHolidays();
             handleSwipeGestures();
+            syncDrawerDarkMode();
         };
     </script>
 </body>
 
 </html>
-

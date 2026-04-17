@@ -11,7 +11,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;800;900&family=DM+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 
 <style>
   :root {
@@ -92,7 +92,7 @@
   .glass-button:active{transform:scale(0.95);}
   
   /* Main content */
-  #app-wrapper { display: none; } /* Hidden until logged in */
+  #app-wrapper { display: none; }
   #app{position:relative;z-index:1;min-height:100vh;padding:0 0 40px;}
   
   /* Authentication Screen */
@@ -100,26 +100,31 @@
     position: fixed; inset: 0; z-index: 1000;
     display: flex; align-items: center; justify-content: center;
     background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(10px);
+    overflow-y: auto; padding: 20px 0;
   }
   .auth-box {
     width: 90%; max-width: 400px; padding: 30px; border-radius: 24px;
-    text-align: center;
+    text-align: center; margin: auto;
   }
-  .auth-input {
+  .auth-input, .auth-select {
     width: 100%; padding: 12px 16px; border-radius: 12px;
     background: rgba(0,0,0,0.05); border: 1px solid var(--glass-border);
     color: var(--text-primary); font-family: 'DM Sans', sans-serif;
-    font-size: 1rem; outline: none; margin-bottom: 15px; transition: 0.3s;
+    font-size: 1rem; outline: none; margin-bottom: 12px; transition: 0.3s;
   }
-  html.dark .auth-input { background: rgba(255,255,255,0.05); }
-  .auth-input:focus { border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,0.2); }
+  html.dark .auth-input, html.dark .auth-select { background: rgba(255,255,255,0.05); }
+  .auth-input:focus, .auth-select:focus { border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,0.2); }
   .auth-btn-main {
     width: 100%; padding: 12px; border-radius: 12px; border: none; cursor: pointer;
     background: linear-gradient(135deg,#7c3aed,#ec4899); color: #fff;
-    font-size: 1.05rem; font-weight: 700; transition: all 0.2s;
+    font-size: 1.05rem; font-weight: 700; transition: all 0.2s; margin-top: 10px;
   }
   .auth-btn-main:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(124,58,237,0.4); }
   
+  .reg-fields { display: none; }
+  .reg-row { display: flex; gap: 10px; }
+  .input-label { display: block; text-align: left; font-size: 0.75rem; font-weight: 700; margin-bottom: 4px; color: var(--text-secondary); }
+
   /* Header */
   #header{
     position:sticky;top:0;z-index:50;
@@ -187,9 +192,6 @@
     max-width:900px;margin:0 auto;padding:0 12px;
     overflow:hidden;
   }
-  .calendar-wrapper{
-    /* Transition is handled dynamically in JS for smooth sliding */
-  }
   
   .day-headers{
     display:grid;grid-template-columns:repeat(7,1fr);
@@ -219,25 +221,35 @@
   .cal-cell.empty{background:transparent;border-color:transparent;cursor:default;pointer-events:none;}
   .cal-cell.regular{background:var(--glass-bg);border-color:var(--glass-border);}
   
-  /* GH & RH GLOW EFFECT */
+  /* OPTIMIZED GH & RH GLOW EFFECT */
   .cal-cell.gh-cell {
-    background: rgba(239,68,68,0.15);
-    border-color: rgba(239,68,68,0.5);
-    animation: glowGH 2.5s infinite alternate;
+    background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.3);
+    animation: glowGH 2s infinite alternate ease-in-out; will-change: box-shadow;
   }
   .cal-cell.rh-cell {
-    background: rgba(59,130,246,0.15);
-    border-color: rgba(59,130,246,0.5);
-    animation: glowRH 2.5s infinite alternate;
+    background: rgba(59,130,246,0.12); border-color: rgba(59,130,246,0.3);
+    animation: glowRH 2s infinite alternate ease-in-out; will-change: box-shadow;
   }
 
   @keyframes glowGH {
-    0% { box-shadow: 0 0 5px rgba(239,68,68,0.2), inset 0 0 5px rgba(239,68,68,0.1); }
-    100% { box-shadow: 0 0 15px rgba(239,68,68,0.5), inset 0 0 10px rgba(239,68,68,0.3); }
+    0% { box-shadow: 0 0 4px rgba(239,68,68,0.1); }
+    100% { box-shadow: 0 0 14px rgba(239,68,68,0.45); }
   }
   @keyframes glowRH {
-    0% { box-shadow: 0 0 5px rgba(59,130,246,0.2), inset 0 0 5px rgba(59,130,246,0.1); }
-    100% { box-shadow: 0 0 15px rgba(59,130,246,0.5), inset 0 0 10px rgba(59,130,246,0.3); }
+    0% { box-shadow: 0 0 4px rgba(59,130,246,0.1); }
+    100% { box-shadow: 0 0 14px rgba(59,130,246,0.45); }
+  }
+
+  /* BIRTHDAY SPARKLE GLOW EFFECT */
+  .cal-cell.bday-cell {
+    background: linear-gradient(135deg, rgba(236,72,153,0.15), rgba(245,158,11,0.15));
+    border-color: rgba(236,72,153,0.5);
+    animation: sparkleBday 1.5s infinite alternate ease-in-out;
+    will-change: box-shadow;
+  }
+  @keyframes sparkleBday {
+    0% { box-shadow: 0 0 5px rgba(236,72,153,0.3); }
+    100% { box-shadow: 0 0 18px rgba(245,158,11,0.6), inset 0 0 8px rgba(236,72,153,0.2); }
   }
 
   .cal-cell.today-cell{
@@ -250,9 +262,7 @@
   /* ENHANCED DATE FONT */
   .day-num{
     font-family:'DM Sans',sans-serif;
-    font-size:1.5rem; /* Increased size */
-    font-weight:800;  /* Bolder */
-    line-height:1;
+    font-size:1.5rem; font-weight:800; line-height:1;
     color:var(--text-primary);
   }
   .cal-cell.gh-cell .day-num{color:#dc2626;}
@@ -267,6 +277,7 @@
   }
   .cal-cell.gh-cell .holiday-name{color:#ef4444;}
   .cal-cell.rh-cell .holiday-name{color:#3b82f6;}
+  .cal-cell.bday-cell .holiday-name{color:#ec4899; font-weight:800;}
   
   .special-dot{
     width:6px;height:6px;border-radius:50%;
@@ -277,15 +288,6 @@
     0%,100%{box-shadow:0 0 4px 2px currentColor;opacity:0.8;}
     50%{box-shadow:0 0 8px 4px currentColor;opacity:1;}
   }
-  
-  /* Today Bounce */
-  @keyframes todayBounce{
-    0%,100%{transform:scale(1);}
-    30%{transform:scale(1.25);}
-    60%{transform:scale(0.95);}
-    80%{transform:scale(1.08);}
-  }
-  .bouncing{animation:todayBounce 0.6s ease;}
   
   /* Jump to Today */
   #jump-today{
@@ -304,9 +306,7 @@
   #jumpTodayBtn:active{transform:scale(0.96);}
   
   /* Footer */
-  #footer{text-align:center;padding:8px;font-size:0.75rem;font-weight:600;color:var(--text-secondary);}
-  #footer span{cursor:pointer;text-decoration:underline dotted;opacity:0.7;}
-  #footer span:hover{opacity:1;}
+  #footer{text-align:center;padding:8px;font-size:0.8rem;font-weight:700;color:var(--text-secondary); letter-spacing: 0.05em;}
   
   /* Sidebar */
   #sidebar-overlay{
@@ -385,8 +385,7 @@
   .modal-header{padding:20px 20px 16px;flex-shrink:0;}
   .modal-body{padding:0 20px 20px;overflow-y:auto;flex:1;overscroll-behavior:contain;}
   .modal-header h2{
-    font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;
-    color:#fff;
+    font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:#fff;
   }
   .modal-header .date-sub{font-size:0.8rem;opacity:0.85;color:#fff;margin-top:2px;}
   .modal-close{
@@ -423,29 +422,30 @@
   .save-status{font-size:0.78rem;font-weight:600;color:#22c55e;opacity:0;transition:opacity 0.3s;}
   .save-status.visible{opacity:1;}
   
-  /* Holiday List Modal */
+  /* UPGRADED HOLIDAY LIST UI */
   .holiday-timeline{display:flex;flex-direction:column;gap:0;}
-  .month-group{margin-bottom:12px;}
-  .month-label{font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-secondary);padding:6px 0;border-bottom:1px solid var(--glass-border);margin-bottom:6px;}
-  .holiday-item{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.04);}
-  html.dark .holiday-item{border-bottom-color:rgba(255,255,255,0.04);}
-  .h-date-badge{
-    min-width:40px;text-align:center;padding:5px 6px;border-radius:10px;
-    font-family:'Playfair Display',serif;font-weight:700;font-size:0.95rem;
-    flex-shrink:0;
+  .month-group{margin-bottom:20px;}
+  .month-label{
+    font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 800; 
+    color: var(--text-primary); padding: 8px 0; 
+    border-bottom: 2px solid var(--glass-border); margin-bottom: 12px;
   }
-  .h-name{font-size:0.88rem;font-weight:600;color:var(--text-primary);}
+  .holiday-item {
+    display: flex; align-items: center; gap: 14px; padding: 12px 10px;
+    border-radius: 12px; background: rgba(0,0,0,0.03);
+    border: 1px solid rgba(0,0,0,0.05); margin-bottom: 8px;
+    transition: background 0.2s, transform 0.2s; cursor: pointer;
+  }
+  html.dark .holiday-item { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.06); }
+  .holiday-item:hover { background: var(--glass-bg); transform: translateX(4px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .h-date-badge {
+    min-width: 52px; text-align: center; padding: 8px 6px; border-radius: 12px;
+    font-family: 'DM Sans', sans-serif; font-weight: 800; font-size: 1.1rem;
+    flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  }
+  .h-name { font-size: 0.95rem; font-weight: 800; color: var(--text-primary); margin-bottom: 2px; }
+  .h-desc { font-size: 0.8rem; font-weight: 500; color: var(--text-secondary); line-height: 1.3;}
   
-  /* Mobile Adjustments */
-  @media(max-width:480px){
-    .title-main{font-size:1.5rem;}
-    .cal-cell{min-height:60px;padding:5px 2px 5px;}
-    .day-num{font-size:1.3rem;} /* Adapted for mobile */
-    .holiday-name{font-size:0.55rem;}
-    .modal-box{border-radius:20px;}
-    #sidebar{width:280px;}
-  }
-
   /* Profile Custom CSS */
   .profile-pic-container {
     position: relative; width: 100px; height: 100px; margin: 0 auto 15px; cursor: pointer;
@@ -461,10 +461,48 @@
   }
   .profile-pic-container:hover .profile-pic-overlay { opacity: 1; }
 
+  /* Family Birthdays List */
+  .f-bday-item {
+    display: flex; justify-content: space-between; align-items: center;
+    background: rgba(0,0,0,0.03); padding: 8px 12px; border-radius: 8px; margin-bottom: 6px;
+  }
+  html.dark .f-bday-item { background: rgba(255,255,255,0.05); }
+
   /* Admin Editor */
   .admin-editor-panel {
     background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.4);
     border-radius: 12px; padding: 12px; margin-top: 15px;
+  }
+
+  /* BIRTHDAY OVERLAY CELEBRATION */
+  #bday-overlay {
+    position: fixed; inset: 0; z-index: 2000;
+    display: flex; align-items: center; justify-content: center; flex-direction: column;
+    background: rgba(0,0,0,0.85); backdrop-filter: blur(15px);
+    opacity: 0; pointer-events: none; transition: opacity 0.5s;
+    text-align: center; color: white;
+  }
+  #bday-overlay.open { opacity: 1; pointer-events: all; }
+  .bday-title {
+    font-family: 'Playfair Display', serif; font-size: 3.5rem; font-weight: 900;
+    background: linear-gradient(135deg, #fcd34d, #f59e0b, #ec4899);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    animation: bdayBounce 1s infinite alternate; margin-bottom: 10px;
+  }
+  .bday-subtitle { font-size: 1.2rem; font-weight: 600; opacity: 0.9; margin-bottom: 30px; }
+  @keyframes bdayBounce {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.1); }
+  }
+  
+  @media(max-width:480px){
+    .title-main{font-size:1.5rem;}
+    .cal-cell{min-height:60px;padding:5px 2px 5px;}
+    .day-num{font-size:1.3rem;} 
+    .holiday-name{font-size:0.55rem;}
+    .modal-box{border-radius:20px;}
+    #sidebar{width:280px;}
+    .bday-title { font-size: 2.5rem; }
   }
 </style>
 </head>
@@ -478,6 +516,14 @@
   <div class="blob blob4"></div>
 </div>
 
+<!-- Special Birthday Celebration Overlay -->
+<div id="bday-overlay">
+  <div style="font-size: 5rem; margin-bottom: 10px;">🎂</div>
+  <div class="bday-title" id="bday-msg">Happy Birthday!</div>
+  <div class="bday-subtitle">May all your wishes come true today! 🎉✨</div>
+  <button class="save-btn" style="background: white; color: #ec4899; font-size: 1.1rem; padding: 12px 30px; border-radius: 30px;" onclick="closeBirthdayOverlay()">Thank You! 🎈</button>
+</div>
+
 <!-- Authentication Screen -->
 <div id="auth-screen">
   <div class="glass-panel auth-box">
@@ -485,11 +531,43 @@
     <p id="auth-subtitle" style="font-size:0.85rem; color:var(--text-secondary); margin-bottom: 20px;">Please login to view calendar</p>
     
     <input type="email" id="auth-email" class="auth-input" placeholder="Enter Email Address"/>
+    
+    <!-- Registration Only Fields -->
+    <div class="reg-fields">
+      <div class="reg-row">
+        <div>
+          <span class="input-label">First Name</span>
+          <input type="text" id="auth-fname" class="auth-input" placeholder="First Name"/>
+        </div>
+        <div>
+          <span class="input-label">Last Name</span>
+          <input type="text" id="auth-lname" class="auth-input" placeholder="Last Name"/>
+        </div>
+      </div>
+      <div>
+        <span class="input-label">Gender</span>
+        <select id="auth-gender" class="auth-select">
+          <option value="" disabled selected>Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div>
+        <span class="input-label">Mobile No.</span>
+        <input type="tel" id="auth-mobile" class="auth-input" placeholder="Enter Mobile Number"/>
+      </div>
+      <div>
+        <span class="input-label">Date of Birth (For Special Wishes!)</span>
+        <input type="date" id="auth-dob" class="auth-input"/>
+      </div>
+    </div>
+
     <input type="password" id="auth-password" class="auth-input" placeholder="Enter Password"/>
     
     <button onclick="handleAuth()" class="auth-btn-main" id="auth-btn">Login</button>
     
-    <div style="margin-top: 15px; font-size: 0.85rem;">
+    <div style="margin-top: 15px; font-size: 0.85rem;" id="forgot-pass-wrap">
       <a href="#" onclick="forgotPassword()" style="color: #ef4444; font-weight: 600; text-decoration: none;">Forgot Password?</a>
     </div>
 
@@ -629,7 +707,7 @@
 
     <!-- Footer -->
     <div id="footer">
-      <span>✨ Designed by Nvn Arya</span>
+      <span>Central Govt. GH & RH Holidays</span>
     </div>
   </div>
 
@@ -652,14 +730,35 @@
       <input type="file" id="profilePicInput" accept="image/*" style="display:none;" onchange="uploadProfilePic(event)">
       
       <!-- User Data -->
-      <label style="font-size:0.8rem; font-weight:700; color:var(--text-secondary);">My Name</label>
-      <input type="text" id="profileNameInput" class="auth-input" style="margin-top:5px;" placeholder="Enter your name">
+      <label style="font-size:0.8rem; font-weight:700; color:var(--text-secondary);">First Name</label>
+      <input type="text" id="profileFnameInput" class="auth-input" style="margin-top:5px; margin-bottom:8px;" placeholder="First Name">
       
+      <label style="font-size:0.8rem; font-weight:700; color:var(--text-secondary);">Last Name</label>
+      <input type="text" id="profileLnameInput" class="auth-input" style="margin-top:5px; margin-bottom:8px;" placeholder="Last Name">
+
+      <label style="font-size:0.8rem; font-weight:700; color:var(--text-secondary);">Date of Birth</label>
+      <input type="date" id="profileDobInput" class="auth-input" style="margin-top:5px; margin-bottom:8px;">
+
       <label style="font-size:0.8rem; font-weight:700; color:var(--text-secondary);">Email</label>
       <input type="email" id="profileEmailInput" class="auth-input" style="margin-top:5px; opacity:0.6; cursor:not-allowed;" disabled>
 
-      <button class="save-btn" style="width:100%; justify-content:center; margin-top:10px;" onclick="saveProfileData()">💾 Save Profile</button>
+      <button class="save-btn" style="width:100%; justify-content:center; margin-top:5px;" onclick="saveProfileData()">💾 Save My Details</button>
       <div id="profileSaveStatus" class="save-status" style="text-align:center; margin-top:5px;">✅ Updated Successfully!</div>
+
+      <!-- FAMILY BIRTHDAYS SECTION -->
+      <div style="margin-top: 25px; border-top: 1px solid var(--glass-border); padding-top: 15px;">
+        <h3 style="font-size:0.95rem; font-weight:800; color:var(--text-primary); margin-bottom:10px;">🎉 Family & Friends Birthdays</h3>
+        
+        <div style="display:flex; gap:8px; margin-bottom:10px;">
+          <input type="text" id="fbName" class="auth-input" style="margin-bottom:0; flex:1;" placeholder="Name">
+          <input type="date" id="fbDob" class="auth-input" style="margin-bottom:0; flex:1;">
+        </div>
+        <button class="save-btn" style="width:100%; justify-content:center; background:linear-gradient(135deg, #10b981, #059669);" onclick="addFamilyBirthday()">➕ Add Birthday</button>
+
+        <div id="familyBdaysList" style="margin-top:15px; max-height: 120px; overflow-y: auto;">
+          <!-- Items injected here via JS -->
+        </div>
+      </div>
 
       <!-- ADMIN BADGE -->
       <div id="adminBadge" style="display:none; margin-top: 20px; border-top: 1px solid var(--glass-border); padding-top: 15px; text-align:center;">
@@ -762,6 +861,9 @@ let customHolidays = {}; // Realtime from Firestore
 let isRegisterMode = false;
 let notesUnsubscribe = null;
 
+// User Profile State
+let currentUserProfile = null; 
+
 // Global Admin Flag
 let isAdmin = false; 
 
@@ -783,14 +885,13 @@ const BASE_HOLIDAYS = {
 };
 
 // ============================================================
-// AUTHENTICATION LOGIC (Verification & Password Reset)
+// AUTHENTICATION LOGIC
 // ============================================================
 auth.onAuthStateChanged(user => {
   if (user) {
-    // Determine admin status globally based on email
     isAdmin = (user.email === 'energymeter20@gmail.com');
 
-    if(user.emailVerified || isAdmin) { // Admins bypass email verification if needed, standard user must verify
+    if(user.emailVerified || isAdmin) { 
       document.getElementById('auth-screen').style.display = 'none';
       document.getElementById('app-wrapper').style.display = 'block';
       document.getElementById('userEmailDisplay').textContent = user.email;
@@ -799,7 +900,7 @@ auth.onAuthStateChanged(user => {
       document.getElementById('auth-screen').style.display = 'flex';
       document.getElementById('app-wrapper').style.display = 'none';
       document.getElementById('auth-error').innerText = "Please click the Verification Link sent to your email, and then Login.";
-      auth.signOut(); // Force sign out until verified
+      auth.signOut();
     }
   } else {
     isAdmin = false;
@@ -811,10 +912,17 @@ auth.onAuthStateChanged(user => {
 function toggleAuthMode() {
   isRegisterMode = !isRegisterMode;
   document.getElementById('auth-title').innerText = isRegisterMode ? "Create Account" : "Welcome Back";
-  document.getElementById('auth-subtitle').innerText = isRegisterMode ? "Enter valid email to receive OTP/Link" : "Please login to view calendar";
+  document.getElementById('auth-subtitle').innerText = isRegisterMode ? "Fill in details to register" : "Please login to view calendar";
   document.getElementById('auth-btn').innerText = isRegisterMode ? "Register" : "Login";
   document.getElementById('auth-toggle-text').innerText = isRegisterMode ? "Already have an account?" : "Don't have an account?";
   document.querySelector('#auth-toggle-text + a').innerText = isRegisterMode ? "Login" : "Create Account";
+  
+  // Toggle Visibility of extra fields
+  const regFields = document.querySelectorAll('.reg-fields');
+  regFields.forEach(el => el.style.display = isRegisterMode ? 'block' : 'none');
+  
+  document.getElementById('forgot-pass-wrap').style.display = isRegisterMode ? 'none' : 'block';
+
   document.getElementById('auth-error').innerText = "";
   document.getElementById('auth-success').innerText = "";
 }
@@ -835,24 +943,40 @@ async function handleAuth() {
   try {
     errorDiv.innerText = "Please wait...";
     if (isRegisterMode) {
+      // Validate additional fields
+      const fname = document.getElementById('auth-fname').value.trim();
+      const lname = document.getElementById('auth-lname').value.trim();
+      const gender = document.getElementById('auth-gender').value;
+      const mobile = document.getElementById('auth-mobile').value.trim();
+      const dob = document.getElementById('auth-dob').value;
+
+      if(!fname || !lname || !gender || !mobile || !dob) {
+         errorDiv.innerText = "All fields (Name, Gender, Mobile, DOB) are required for registration.";
+         return;
+      }
+
       // REGISTER
       const cred = await auth.createUserWithEmailAndPassword(email, password);
       await cred.user.sendEmailVerification();
       errorDiv.innerText = "";
       successDiv.innerText = "Account created! A Verification Link has been sent to your email. Please verify to Login.";
-      auth.signOut();
       
-      // Setup empty profile
+      // Save User Data (Name, Gender, Mobile, DOB)
       await db.collection('users').doc(cred.user.uid).set({
-        name: email.split('@')[0],
-        photoBase64: ""
+        firstName: fname,
+        lastName: lname,
+        gender: gender,
+        mobile: mobile,
+        dob: dob,
+        photoBase64: "",
+        familyBirthdays: []
       });
 
+      auth.signOut();
     } else {
       // LOGIN
       const cred = await auth.signInWithEmailAndPassword(email, password);
       if(!cred.user.emailVerified && cred.user.email !== 'energymeter20@gmail.com') {
-        // Automatically send email again if they try to login without verification
         await cred.user.sendEmailVerification();
         errorDiv.innerText = "Your email is not verified yet. A new Link has been sent, please check.";
         auth.signOut();
@@ -876,7 +1000,7 @@ async function forgotPassword() {
   
   try {
     await auth.sendPasswordResetEmail(email);
-    successDiv.innerText = "Password Reset link (OTP alternative) sent to your email. Please check.";
+    successDiv.innerText = "Password Reset link sent to your email. Please check.";
   } catch (e) {
     errorDiv.innerText = e.message;
   }
@@ -888,7 +1012,7 @@ function logout() {
 }
 
 // ============================================================
-// PROFILE MANAGEMENT
+// PROFILE & BIRTHDAY MANAGEMENT
 // ============================================================
 async function loadUserProfile() {
   const user = auth.currentUser;
@@ -899,28 +1023,54 @@ async function loadUserProfile() {
   try {
     const doc = await db.collection('users').doc(user.uid).get();
     if(doc.exists) {
-      const data = doc.data();
-      const name = data.name || user.email.split('@')[0];
-      const photo = data.photoBase64 || `https://ui-avatars.com/api/?name=${name}&background=7c3aed&color=fff`;
+      currentUserProfile = doc.data();
+      const fname = currentUserProfile.firstName || user.email.split('@')[0];
+      const lname = currentUserProfile.lastName || '';
+      const photo = currentUserProfile.photoBase64 || `https://ui-avatars.com/api/?name=${fname}+${lname}&background=7c3aed&color=fff`;
       
-      document.getElementById('profileNameInput').value = name;
-      document.getElementById('sidebarProfileName').innerText = name;
+      document.getElementById('profileFnameInput').value = fname;
+      document.getElementById('profileLnameInput').value = lname;
+      if(currentUserProfile.dob) document.getElementById('profileDobInput').value = currentUserProfile.dob;
+
+      document.getElementById('sidebarProfileName').innerText = fname + ' ' + lname;
       document.getElementById('sidebarProfilePic').src = photo;
       document.getElementById('modalProfilePic').src = photo;
+
+      renderFamilyBirthdaysUI();
+      checkBirthdayToday(); // Check if today is user's bday
     }
   } catch(e) { console.error("Profile load error", e); }
 }
 
-function openProfileModal() {
-  loadUserProfile(); // refresh data
-  
-  // Show Admin Badge if applicable
-  if (isAdmin) {
-    document.getElementById('adminBadge').style.display = 'block';
-  } else {
-    document.getElementById('adminBadge').style.display = 'none';
-  }
+function checkBirthdayToday() {
+  if (!currentUserProfile || !currentUserProfile.dob) return;
+  // Check if we already wished them this session
+  if (sessionStorage.getItem('bday_wished_today') === 'true') return;
 
+  const today = new Date();
+  const todayMMDD = String(today.getMonth() + 1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
+  
+  // dob format is usually YYYY-MM-DD
+  const userMMDD = currentUserProfile.dob.substring(5); 
+
+  if (todayMMDD === userMMDD) {
+    // Show Birthday Overlay
+    document.getElementById('bday-msg').innerText = `Happy Birthday, ${currentUserProfile.firstName}!`;
+    document.getElementById('bday-overlay').classList.add('open');
+    fireConfetti();
+    setTimeout(fireConfetti, 1000);
+    setTimeout(fireConfetti, 2500);
+    sessionStorage.setItem('bday_wished_today', 'true');
+  }
+}
+
+function closeBirthdayOverlay() {
+  document.getElementById('bday-overlay').classList.remove('open');
+}
+
+function openProfileModal() {
+  // Show Admin Badge if applicable
+  document.getElementById('adminBadge').style.display = isAdmin ? 'block' : 'none';
   document.getElementById('profileModal').classList.add('open');
 }
 
@@ -931,12 +1081,9 @@ function closeProfileModal() {
 function uploadProfilePic(event) {
   const file = event.target.files[0];
   if (!file) return;
-  
   const reader = new FileReader();
   reader.onload = function(e) {
-    const base64Str = e.target.result;
-    document.getElementById('modalProfilePic').src = base64Str;
-    // Note: To permanently save, user must click 'Save Profile'
+    document.getElementById('modalProfilePic').src = e.target.result;
   };
   reader.readAsDataURL(file);
 }
@@ -945,17 +1092,28 @@ async function saveProfileData() {
   const user = auth.currentUser;
   if(!user) return;
 
-  const newName = document.getElementById('profileNameInput').value.trim();
+  const fname = document.getElementById('profileFnameInput').value.trim();
+  const lname = document.getElementById('profileLnameInput').value.trim();
+  const dob = document.getElementById('profileDobInput').value;
   const newPhoto = document.getElementById('modalProfilePic').src;
 
   try {
     await db.collection('users').doc(user.uid).set({
-      name: newName,
+      firstName: fname,
+      lastName: lname,
+      dob: dob,
       photoBase64: newPhoto
     }, { merge: true });
 
-    document.getElementById('sidebarProfileName').innerText = newName;
+    currentUserProfile.firstName = fname;
+    currentUserProfile.lastName = lname;
+    currentUserProfile.dob = dob;
+    currentUserProfile.photoBase64 = newPhoto;
+
+    document.getElementById('sidebarProfileName').innerText = fname + ' ' + lname;
     document.getElementById('sidebarProfilePic').src = newPhoto;
+    
+    renderCalendar(); // Re-render in case DOB changed
     
     const s = document.getElementById('profileSaveStatus');
     s.classList.add('visible');
@@ -964,6 +1122,72 @@ async function saveProfileData() {
     alert("Error saving profile: " + e.message);
   }
 }
+
+// FAMILY BIRTHDAYS
+async function addFamilyBirthday() {
+  const name = document.getElementById('fbName').value.trim();
+  const dob = document.getElementById('fbDob').value;
+  if(!name || !dob) { alert("Please enter both Name and DOB."); return; }
+
+  const user = auth.currentUser;
+  if(!user) return;
+
+  const newBday = { id: Date.now().toString(), name, dob };
+  let arr = currentUserProfile.familyBirthdays || [];
+  arr.push(newBday);
+
+  try {
+    await db.collection('users').doc(user.uid).set({ familyBirthdays: arr }, { merge: true });
+    currentUserProfile.familyBirthdays = arr;
+    document.getElementById('fbName').value = '';
+    document.getElementById('fbDob').value = '';
+    renderFamilyBirthdaysUI();
+    renderCalendar(); // Update calendar markers
+  } catch(e) { alert("Error adding birthday: " + e.message); }
+}
+
+async function removeFamilyBirthday(id) {
+  const user = auth.currentUser;
+  if(!user) return;
+
+  let arr = currentUserProfile.familyBirthdays || [];
+  arr = arr.filter(b => b.id !== id);
+
+  try {
+    await db.collection('users').doc(user.uid).set({ familyBirthdays: arr }, { merge: true });
+    currentUserProfile.familyBirthdays = arr;
+    renderFamilyBirthdaysUI();
+    renderCalendar(); 
+  } catch(e) { alert("Error removing birthday: " + e.message); }
+}
+
+function renderFamilyBirthdaysUI() {
+  const list = document.getElementById('familyBdaysList');
+  let arr = currentUserProfile?.familyBirthdays || [];
+  
+  if (arr.length === 0) {
+    list.innerHTML = `<div style="text-align:center; font-size:0.8rem; color:var(--text-secondary);">No birthdays added yet.</div>`;
+    return;
+  }
+
+  let html = '';
+  arr.forEach(b => {
+    // Format date beautifully
+    const d = new Date(b.dob);
+    const dateStr = d.toLocaleDateString('en-IN', {day:'numeric', month:'short'});
+    html += `
+      <div class="f-bday-item">
+        <div>
+          <div style="font-weight:700; font-size:0.85rem; color:var(--text-primary);">🎈 ${b.name}</div>
+          <div style="font-size:0.7rem; color:var(--text-secondary);">${dateStr}</div>
+        </div>
+        <button onclick="removeFamilyBirthday('${b.id}')" style="background:rgba(239,68,68,0.1); color:#ef4444; border:none; padding:4px 8px; border-radius:6px; cursor:pointer; font-size:0.75rem;">Remove</button>
+      </div>
+    `;
+  });
+  list.innerHTML = html;
+}
+
 
 // ============================================================
 // ADMIN LOGIC (App Owner Access)
@@ -978,14 +1202,10 @@ async function saveAdminHoliday() {
 
   try {
     if (type === 'None') {
-      // Remove custom holiday
       await db.collection('custom_holidays').doc(currentDateStr).delete();
     } else {
       if(!name) { alert("Holiday name is required."); return; }
-      // Add/Update
-      await db.collection('custom_holidays').doc(currentDateStr).set({
-        type, name, desc
-      });
+      await db.collection('custom_holidays').doc(currentDateStr).set({ type, name, desc });
     }
     closeDateModal();
   } catch (e) {
@@ -994,14 +1214,13 @@ async function saveAdminHoliday() {
 }
 
 // ============================================================
-// REALTIME DATA FETCHING (Firestore onSnapshot)
+// REALTIME DATA FETCHING & APP INIT
 // ============================================================
 function initApp() {
   loadSettings();
   populateSelects();
-  loadUserProfile();
+  loadUserProfile(); 
   
-  // Realtime listener for Custom Holidays from Firebase (Added/Edited by Admin)
   db.collection('custom_holidays').onSnapshot(snapshot => {
     snapshot.docChanges().forEach(change => {
       if (change.type === "added" || change.type === "modified") {
@@ -1022,9 +1241,7 @@ function getSetting(key, def) {
   const v = localStorage.getItem('cal_'+key);
   return v === null ? def : (v === 'true' ? true : (v === 'false' ? false : v));
 }
-function saveSetting(key, val) {
-  localStorage.setItem('cal_'+key, val);
-}
+function saveSetting(key, val) { localStorage.setItem('cal_'+key, val); }
 
 function loadSettings() {
   setTheme(getSetting('theme','system'), true);
@@ -1101,21 +1318,54 @@ function renderCalendar() {
     const isToday = date.toDateString() === TODAY.toDateString();
     const wknd = isWeekend(date);
 
+    // Birthday Logic Check
+    let isBday = false;
+    let bdayNameStr = "";
+    const renderMMDD = dateStr.substring(5); // e.g. "07-03"
+    
+    if (currentUserProfile) {
+        // User's own birthday
+        if (currentUserProfile.dob && currentUserProfile.dob.endsWith(renderMMDD)) {
+            isBday = true;
+            bdayNameStr += `<div>🎂 My B'day</div>`;
+        }
+        // Family/Friends Birthdays
+        if (currentUserProfile.familyBirthdays) {
+            currentUserProfile.familyBirthdays.forEach(fb => {
+                if (fb.dob && fb.dob.endsWith(renderMMDD)) {
+                    isBday = true;
+                    bdayNameStr += `<div>🎈 ${fb.name}'s B'day</div>`;
+                }
+            });
+        }
+    }
+
     let cls = 'cal-cell ';
     if (isToday) cls += 'today-cell ';
+    else if (isBday) cls += 'bday-cell '; // Highlight birthday strongly
     else if (hd?.type === 'GH') cls += 'gh-cell ';
     else if (hd?.type === 'RH') cls += 'rh-cell ';
     else cls += 'regular ';
     if (wknd && getSetting('weekend',true) && !isToday) cls += 'weekend ';
 
-    const dotColor = hd?.type === 'GH' ? '#ef4444' : hd?.type === 'RH' ? '#3b82f6' : '';
-    const dotHtml = dotColor ? `<div class="special-dot" style="background:${dotColor};color:${dotColor};"></div>` : '';
-    const nameHtml = hd ? `<div class="holiday-name">${hd.name}</div>` : '';
+    let specialDotsHtml = '';
+    if(hd?.type === 'GH') specialDotsHtml += `<div class="special-dot" style="background:#ef4444;color:#ef4444;"></div>`;
+    if(hd?.type === 'RH') specialDotsHtml += `<div class="special-dot" style="background:#3b82f6;color:#3b82f6;"></div>`;
+
+    // Construct name block: show holiday name OR birthday name OR both
+    let nameHtml = '';
+    if (bdayNameStr) {
+      nameHtml += `<div class="holiday-name">${bdayNameStr}</div>`;
+    }
+    if (hd) {
+       // If there's a holiday, show it. (If there's also a bday, it stacks)
+       nameHtml += `<div class="holiday-name" style="${isBday ? 'margin-top:2px; font-size:0.55rem; color:var(--text-secondary); font-weight:600;' : ''}">${hd.name}</div>`;
+    }
 
     html += `<div class="${cls.trim()}" onclick="openDateModal('${dateStr}')">
       <div class="day-num">${d}</div>
       ${nameHtml}
-      ${dotHtml}
+      ${specialDotsHtml}
     </div>`;
   }
   document.getElementById('calGrid').innerHTML = html;
@@ -1127,26 +1377,31 @@ function formatDateStr(y, m, d) {
 }
 
 // ============================================================
-// SMOOTH SWIPE ANIMATION FOR NEXT/PREVIOUS
+// DIRECT NAVIGATION FROM LIST TO CALENDAR
 // ============================================================
+function jumpToDateAndOpen(dateStr) {
+  closeHolidayListModal();
+  const [y, m, d] = dateStr.split('-').map(Number);
+  currentYear = y;
+  currentMonth = m - 1;
+  renderCalendar(); // Renders the target month
+  openDateModal(dateStr); // Opens the specific date modal
+}
+
 function changeMonth(dir) {
   const wrapper = document.getElementById('calWrapper');
-  
   if (getSetting('animations',true)) {
     wrapper.style.transition = 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s';
     wrapper.style.transform = `translateX(${dir > 0 ? '-80px' : '80px'})`;
     wrapper.style.opacity = '0';
-
     setTimeout(() => {
       currentMonth += dir;
       if (currentMonth > 11) { currentMonth = 0; currentYear++; }
       if (currentMonth < 0) { currentMonth = 11; currentYear--; }
       renderCalendar();
-
       wrapper.style.transition = 'none';
       wrapper.style.transform = `translateX(${dir > 0 ? '80px' : '-80px'})`;
       void wrapper.offsetWidth;
-
       wrapper.style.transition = 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s';
       wrapper.style.transform = 'translateX(0)';
       wrapper.style.opacity = '1';
@@ -1169,14 +1424,6 @@ function jumpToToday() {
   }, 100);
 }
 
-// Swipe Support
-let touchStartX = 0;
-document.getElementById('calWrapper').addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, {passive:true});
-document.getElementById('calWrapper').addEventListener('touchend', e => {
-  const dx = e.changedTouches[0].clientX - touchStartX;
-  if (Math.abs(dx) > 50) changeMonth(dx < 0 ? 1 : -1);
-});
-
 // ============================================================
 // DATE MODAL & PERSONAL NOTES (Firebase)
 // ============================================================
@@ -1194,6 +1441,20 @@ async function openDateModal(dateStr) {
   else if (wknd) grad = 'linear-gradient(135deg,#ea580c,#c2410c)';
   else if (isToday) grad = 'linear-gradient(135deg,#16a34a,#15803d)';
 
+  // Check if it's a birthday 
+  let isBday = false;
+  const renderMMDD = dateStr.substring(5);
+  if (currentUserProfile) {
+      if (currentUserProfile.dob && currentUserProfile.dob.endsWith(renderMMDD)) isBday = true;
+      if (currentUserProfile.familyBirthdays) {
+          currentUserProfile.familyBirthdays.forEach(fb => {
+              if (fb.dob && fb.dob.endsWith(renderMMDD)) isBday = true;
+          });
+      }
+  }
+
+  if (isBday) grad = 'linear-gradient(135deg, #ec4899, #f59e0b)';
+
   document.getElementById('dateModalHeader').style.background = grad;
   document.getElementById('dmTitle').textContent = new Intl.DateTimeFormat('en-IN',{weekday:'long',day:'numeric'}).format(date);
   document.getElementById('dmSub').textContent = new Intl.DateTimeFormat('en-IN',{month:'long',year:'numeric'}).format(date);
@@ -1201,6 +1462,7 @@ async function openDateModal(dateStr) {
   let badge = '';
   if (isToday) badge = `<span style="background:rgba(255,255,255,0.25);padding:2px 10px;border-radius:10px;font-size:0.72rem;font-weight:600;color:#fff;">📍 Today</span>`;
   if (hd?.type) badge += ` <span style="background:rgba(255,255,255,0.25);padding:2px 10px;border-radius:10px;font-size:0.72rem;font-weight:600;color:#fff;">${hd.type}</span>`;
+  if (isBday) badge += ` <span style="background:rgba(255,255,255,0.25);padding:2px 10px;border-radius:10px;font-size:0.72rem;font-weight:600;color:#fff;">🎂 Birthday</span>`;
   document.getElementById('dmBadge').innerHTML = badge;
 
   const ec = document.getElementById('dmEventCard');
@@ -1208,7 +1470,6 @@ async function openDateModal(dateStr) {
     document.getElementById('dmEventName').textContent = hd.name;
     document.getElementById('dmEventDesc').textContent = hd.desc || '';
     ec.style.display = '';
-    if (hd.name.toLowerCase().includes("birthday")) fireConfetti();
   } else {
     ec.style.display = 'none';
   }
@@ -1279,11 +1540,11 @@ function openHolidayList(type) {
   const color = type === 'GH' ? '#dc2626' : '#2563eb';
   const grad = type === 'GH' ? 'linear-gradient(135deg,#dc2626,#9f1239)' : 'linear-gradient(135deg,#2563eb,#1d4ed8)';
   document.getElementById('holidayListHeader').style.background = grad;
-  document.getElementById('hlTitle').textContent = type === 'GH' ? '🔴 Gazetted Holidays (GH)' : '🔵 Restricted Holidays (RH)';
+  document.getElementById('hlTitle').textContent = type === 'GH' ? `🔴 Gazetted Holidays (${currentYear})` : `🔵 Restricted Holidays (${currentYear})`;
 
   const allHolidays = {...BASE_HOLIDAYS, ...customHolidays};
   const filtered = Object.entries(allHolidays)
-    .filter(([,v]) => v?.type === type)
+    .filter(([dateStr, v]) => v?.type === type && dateStr.startsWith(currentYear.toString()))
     .sort(([a],[b]) => a.localeCompare(b));
 
   const byMonth = {};
@@ -1295,21 +1556,25 @@ function openHolidayList(type) {
 
   let html = '';
   Object.entries(byMonth).forEach(([m, items]) => {
-    html += `<div class="month-group"><div class="month-label">${MONTHS[m]}</div>`;
+    html += `<div class="month-group"><div class="month-label">${MONTHS[m]} ${currentYear}</div>`;
     items.forEach(({dateStr, hd}) => {
       const d = parseInt(dateStr.split('-')[2]);
       const date = new Date(dateStr+'T00:00:00');
       const wd = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][date.getDay()];
-      html += `<div class="holiday-item">
-        <div class="h-date-badge" style="background:${type==='GH'?'rgba(239,68,68,0.12)':'rgba(59,130,246,0.12)'};color:${color};">${d}<br/><span style="font-size:0.6rem;font-weight:400;">${wd}</span></div>
+      html += `<div class="holiday-item" onclick="jumpToDateAndOpen('${dateStr}')" title="Tap to view in calendar">
+        <div class="h-date-badge" style="background:${type==='GH'?'rgba(239,68,68,0.12)':'rgba(59,130,246,0.12)'};color:${color};">${d}<br/><span style="font-size:0.65rem;font-weight:600;opacity:0.8;color:inherit;">${wd}</span></div>
         <div>
           <div class="h-name">${hd.name}</div>
-          ${hd.desc ? `<div style="font-size:0.72rem;color:var(--text-secondary);">${hd.desc}</div>` : ''}
+          ${hd.desc ? `<div class="h-desc">${hd.desc}</div>` : ''}
         </div>
       </div>`;
     });
     html += '</div>';
   });
+
+  if(Object.keys(byMonth).length === 0) {
+      html = `<div style="text-align:center; padding: 20px; color:var(--text-secondary); font-weight:600;">No ${type === 'GH' ? 'Gazetted' : 'Restricted'} holidays found for ${currentYear}.</div>`;
+  }
 
   document.getElementById('hlList').innerHTML = html;
   document.getElementById('holidayListModal').classList.add('open');

@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en" class="">
 <head>
@@ -15,96 +16,84 @@
 
 <style>
   :root {
-    --glass-bg: rgba(255,255,255,0.18);
-    --glass-border: rgba(255,255,255,0.35);
+    --bg-gradient: linear-gradient(135deg, #f0f4ff 0%, #fdf2f8 100%);
+    --glass-bg: rgba(255,255,255,0.4);
+    --glass-border: rgba(255,255,255,0.5);
     --glass-shadow: rgba(255,255,255,0.6);
-    --glass-blur: blur(40px) saturate(220%);
+    --glass-blur: blur(12px); /* Reduced blur for better mobile performance */
     --text-primary: #1a1a2e;
     --text-secondary: #4a4a6a;
-    --blob1: #ff6eb4;
-    --blob2: #6ec6ff;
-    --blob3: #38bdf8;
-    --blob4: #fb923c;
     --today-grad: linear-gradient(135deg,#22c55e,#16a34a);
     --wknd-color: #f97316;
   }
   html.dark {
-    --glass-bg: rgba(15,15,35,0.45);
-    --glass-border: rgba(255,255,255,0.12);
-    --glass-shadow: rgba(255,255,255,0.08);
-    --text-primary: #e8e8f8;
-    --text-secondary: #a0a0c0;
+    --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    --glass-bg: rgba(15,23,42,0.6);
+    --glass-border: rgba(255,255,255,0.08);
+    --glass-shadow: rgba(255,255,255,0.05);
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0;}
   body{
     font-family:'DM Sans',sans-serif;
     color:var(--text-primary);
+    background: var(--bg-gradient);
     min-height:100vh;
     overflow-x:hidden;
-    transition:color 0.3s;
+    transition: background 0.3s, color 0.3s;
   }
   
-  /* Liquid Background */
-  .liquid-bg{
-    position:fixed;inset:0;z-index:0;
-    background:linear-gradient(135deg,#f0f4ff 0%,#fce4ff 100%);
-    overflow:hidden;
-  }
-  html.dark .liquid-bg{
-    background:linear-gradient(135deg,#0a0a1e 0%,#120820 100%);
-  }
-  .blob{
-    position:absolute;border-radius:50%;
-    filter:blur(80px);opacity:0.55;
-    animation:floatBlob 18s ease-in-out infinite;
-  }
-  html.dark .blob{opacity:0.35;}
-  .blob1{width:520px;height:520px;background:var(--blob1);top:-100px;left:-120px;animation-duration:20s;}
-  .blob2{width:480px;height:480px;background:var(--blob2);bottom:-100px;right:-80px;animation-duration:24s;animation-delay:-6s;}
-  .blob3{width:360px;height:360px;background:var(--blob3);top:40%;left:60%;animation-duration:16s;animation-delay:-10s;}
-  .blob4{width:300px;height:300px;background:var(--blob4);bottom:20%;left:10%;animation-duration:22s;animation-delay:-4s;}
-  @keyframes floatBlob{
-    0%{transform:translate(0,0) scale(1);}
-    33%{transform:translate(40px,-50px) scale(1.08);}
-    66%{transform:translate(-30px,30px) scale(0.95);}
-    100%{transform:translate(0,0) scale(1);}
-  }
-  
-  /* Glassmorphism */
+  /* Glassmorphism - Optimized */
   .glass-panel{
     background:var(--glass-bg);
     backdrop-filter:var(--glass-blur);
     -webkit-backdrop-filter:var(--glass-blur);
     border:1px solid var(--glass-border);
-    box-shadow:0 8px 32px rgba(0,0,0,0.12),inset 0 1px 0 var(--glass-shadow);
+    box-shadow:0 8px 32px rgba(0,0,0,0.05);
   }
   .glass-button{
     background:var(--glass-bg);
-    backdrop-filter:blur(20px) saturate(180%);
-    -webkit-backdrop-filter:blur(20px) saturate(180%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border:1px solid var(--glass-border);
-    box-shadow:0 4px 16px rgba(0,0,0,0.1),inset 0 1px 0 var(--glass-shadow);
+    box-shadow:0 4px 12px rgba(0,0,0,0.05);
     cursor:pointer;
-    transition:transform 0.15s,box-shadow 0.15s,background 0.2s;
+    transition:transform 0.15s, background 0.2s;
     color:var(--text-primary);
   }
-  .glass-button:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.15);}
+  .glass-button:hover{transform:translateY(-2px);}
   .glass-button:active{transform:scale(0.95);}
   
-  /* Main content */
-  #app-wrapper { display: none; }
+  /* Initial Splash Loader */
+  #splash-screen {
+    position: fixed; inset: 0; z-index: 9999;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: var(--bg-gradient);
+  }
+  .spinner {
+    width: 40px; height: 40px; border: 4px solid rgba(124,58,237,0.3);
+    border-top-color: #7c3aed; border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin { 100% { transform: rotate(360deg); } }
+
+  /* Main content hidden initially */
+  #auth-screen, #app-wrapper { display: none; }
+  
   #app{position:relative;z-index:1;min-height:100vh;padding:0 0 40px;}
   
   /* Authentication Screen */
   #auth-screen {
     position: fixed; inset: 0; z-index: 1000;
-    display: flex; align-items: center; justify-content: center;
-    background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(10px);
+    align-items: center; justify-content: center;
+    background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px);
     overflow-y: auto; padding: 20px 0;
   }
   .auth-box {
     width: 90%; max-width: 400px; padding: 30px; border-radius: 24px;
-    text-align: center; margin: auto;
+    text-align: center; margin: auto; background: var(--bg-gradient);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
   }
   .auth-input, .auth-select {
     width: 100%; padding: 12px 16px; border-radius: 12px;
@@ -146,8 +135,8 @@
   .gh-rh-badge{
     display:inline-flex;align-items:center;gap:4px;
     padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:600;
-    background:linear-gradient(135deg,rgba(239,68,68,0.2),rgba(59,130,246,0.2));
-    border:1px solid rgba(139,92,246,0.3);color:var(--text-secondary);margin-top:4px;
+    background:linear-gradient(135deg,rgba(239,68,68,0.1),rgba(59,130,246,0.1));
+    border:1px solid rgba(139,92,246,0.2);color:var(--text-secondary);margin-top:4px;
   }
   
   /* Legend Filter Buttons */
@@ -160,9 +149,9 @@
     border:none;cursor:pointer;transition:all 0.2s;
     display:flex;align-items:center;gap:5px;
   }
-  .legend-btn.wknd{background:rgba(249,115,22,0.18);color:#ea580c;border:1px solid rgba(249,115,22,0.3);}
-  .legend-btn.gh{background:rgba(239,68,68,0.18);color:#dc2626;border:1px solid rgba(239,68,68,0.3);}
-  .legend-btn.rh{background:rgba(59,130,246,0.18);color:#2563eb;border:1px solid rgba(59,130,246,0.3);}
+  .legend-btn.wknd{background:rgba(249,115,22,0.15);color:#ea580c;border:1px solid rgba(249,115,22,0.3);}
+  .legend-btn.gh{background:rgba(239,68,68,0.15);color:#dc2626;border:1px solid rgba(239,68,68,0.3);}
+  .legend-btn.rh{background:rgba(59,130,246,0.15);color:#2563eb;border:1px solid rgba(59,130,246,0.3);}
   .legend-btn:hover{transform:scale(1.05);}
   
   /* Navigation */
@@ -178,7 +167,6 @@
   .month-year-selects{display:flex;gap:8px;}
   .month-year-selects select{
     background:var(--glass-bg);
-    backdrop-filter:blur(20px);
     border:1px solid var(--glass-border);
     color:var(--text-primary);
     padding:6px 12px;border-radius:12px;
@@ -190,7 +178,7 @@
   /* Calendar Grid */
   #calendar-container{
     max-width:900px;margin:0 auto;padding:0 12px;
-    overflow:hidden;
+    overflow:hidden; /* crucial for swipe */
   }
   
   .day-headers{
@@ -212,49 +200,34 @@
   .cal-cell{
     border-radius:14px;padding:7px 4px 6px;
     min-height:75px;cursor:pointer;position:relative;
-    transition:transform 0.18s cubic-bezier(.4,0,.2,1),box-shadow 0.18s,z-index 0s;
+    transition:transform 0.15s cubic-bezier(.4,0,.2,1); /* Optimized transition */
     display:flex;flex-direction:column;align-items:center;
     border:1px solid transparent;
     user-select:none;
   }
-  .cal-cell:hover{transform:scale(1.08);z-index:20;box-shadow:0 8px 30px rgba(0,0,0,0.18);}
+  .cal-cell:active{transform:scale(0.95);}
   .cal-cell.empty{background:transparent;border-color:transparent;cursor:default;pointer-events:none;}
   .cal-cell.regular{background:var(--glass-bg);border-color:var(--glass-border);}
   
-  /* OPTIMIZED GH & RH GLOW EFFECT */
+  /* STATIC STYLING FOR GH/RH/BDAY (Removed heavy glow animations) */
   .cal-cell.gh-cell {
-    background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.3);
-    animation: glowGH 2s infinite alternate ease-in-out; will-change: box-shadow;
+    background: rgba(239,68,68,0.1); 
+    border-color: rgba(239,68,68,0.35);
   }
   .cal-cell.rh-cell {
-    background: rgba(59,130,246,0.12); border-color: rgba(59,130,246,0.3);
-    animation: glowRH 2s infinite alternate ease-in-out; will-change: box-shadow;
+    background: rgba(59,130,246,0.1); 
+    border-color: rgba(59,130,246,0.35);
   }
-
-  @keyframes glowGH {
-    0% { box-shadow: 0 0 4px rgba(239,68,68,0.1); }
-    100% { box-shadow: 0 0 14px rgba(239,68,68,0.45); }
-  }
-  @keyframes glowRH {
-    0% { box-shadow: 0 0 4px rgba(59,130,246,0.1); }
-    100% { box-shadow: 0 0 14px rgba(59,130,246,0.45); }
-  }
-
-  /* BIRTHDAY SPARKLE GLOW EFFECT */
   .cal-cell.bday-cell {
     background: linear-gradient(135deg, rgba(236,72,153,0.15), rgba(245,158,11,0.15));
-    border-color: rgba(236,72,153,0.5);
-    animation: sparkleBday 1.5s infinite alternate ease-in-out;
-    will-change: box-shadow;
+    border-color: rgba(236,72,153,0.4);
   }
-  @keyframes sparkleBday {
-    0% { box-shadow: 0 0 5px rgba(236,72,153,0.3); }
-    100% { box-shadow: 0 0 18px rgba(245,158,11,0.6), inset 0 0 8px rgba(236,72,153,0.2); }
-  }
+  html.dark .cal-cell.gh-cell { background: rgba(239,68,68,0.2); }
+  html.dark .cal-cell.rh-cell { background: rgba(59,130,246,0.2); }
 
   .cal-cell.today-cell{
     background:var(--today-grad);border-color:rgba(34,197,94,0.5);
-    box-shadow:0 4px 20px rgba(34,197,94,0.35);
+    box-shadow:0 4px 12px rgba(34,197,94,0.3);
   }
   .cal-cell.today-cell .day-num{color:#fff!important;}
   .cal-cell.today-cell .holiday-name{color:rgba(255,255,255,0.9)!important;}
@@ -282,11 +255,6 @@
   .special-dot{
     width:6px;height:6px;border-radius:50%;
     position:absolute;bottom:5px;left:50%;transform:translateX(-50%);
-    animation:specialGlow 2s ease-in-out infinite;
-  }
-  @keyframes specialGlow{
-    0%,100%{box-shadow:0 0 4px 2px currentColor;opacity:0.8;}
-    50%{box-shadow:0 0 8px 4px currentColor;opacity:1;}
   }
   
   /* Jump to Today */
@@ -298,11 +266,10 @@
     padding:10px 28px;border-radius:30px;
     font-size:0.85rem;font-weight:600;border:none;
     background:linear-gradient(135deg,#22c55e,#16a34a);
-    color:#fff;box-shadow:0 4px 16px rgba(34,197,94,0.35);
+    color:#fff;box-shadow:0 4px 12px rgba(34,197,94,0.3);
     cursor:pointer;transition:all 0.2s;
     display:flex;align-items:center;gap:7px;
   }
-  #jumpTodayBtn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(34,197,94,0.45);}
   #jumpTodayBtn:active{transform:scale(0.96);}
   
   /* Footer */
@@ -321,6 +288,7 @@
     transform:translateX(-100%);
     transition:transform 0.35s cubic-bezier(.4,0,.2,1);
     display:flex;flex-direction:column;gap:16px;
+    background: var(--bg-gradient); border-right: 1px solid var(--glass-border);
   }
   #sidebar.open{transform:translateX(0);}
   .sidebar-section{padding:14px;border-radius:16px;}
@@ -363,12 +331,12 @@
     background:#fff;color:#7c3aed;
     box-shadow:0 2px 8px rgba(0,0,0,0.12);
   }
-  html.dark .pill-btn.active{background:rgba(139,92,246,0.3);color:#a78bfa;}
+  html.dark .pill-btn.active{background:rgba(139,92,246,0.3);color:#f8fafc;}
   
   /* Modals */
   .modal-overlay{
     position:fixed;inset:0;z-index:300;
-    background:rgba(0,0,0,0.45);backdrop-filter:blur(8px);
+    background:rgba(0,0,0,0.5); backdrop-filter:blur(4px);
     display:flex;align-items:center;justify-content:center;padding:16px;
     opacity:0;pointer-events:none;transition:opacity 0.25s;
     overscroll-behavior:contain;
@@ -378,10 +346,12 @@
     width:100%;max-width:480px;max-height:90vh;
     border-radius:24px;overflow:hidden;
     display:flex;flex-direction:column;
-    transform:translateY(30px) scale(0.96);
+    background: var(--bg-gradient);
+    transform:translateY(20px);
     transition:transform 0.3s cubic-bezier(.34,1.56,.64,1);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
   }
-  .modal-overlay.open .modal-box{transform:translateY(0) scale(1);}
+  .modal-overlay.open .modal-box{transform:translateY(0);}
   .modal-header{padding:20px 20px 16px;flex-shrink:0;}
   .modal-body{padding:0 20px 20px;overflow-y:auto;flex:1;overscroll-behavior:contain;}
   .modal-header h2{
@@ -396,10 +366,11 @@
     display:flex;align-items:center;justify-content:center;
     transition:background 0.2s;
   }
-  .modal-close:hover{background:rgba(255,255,255,0.35);}
+  .modal-close:active{background:rgba(255,255,255,0.35); transform:scale(0.9);}
   
   /* Section Cards inside modal */
-  .info-card{border-radius:14px;padding:14px;margin-bottom:12px;}
+  .info-card{border-radius:14px;padding:14px;margin-bottom:12px; border: 1px solid var(--glass-border); background: rgba(0,0,0,0.02);}
+  html.dark .info-card{background: rgba(255,255,255,0.02);}
   .info-card h4{font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-secondary);margin-bottom:8px;}
   
   /* Notes Textarea */
@@ -418,7 +389,7 @@
     font-size:0.85rem;font-weight:600;transition:all 0.2s;
     display:flex;align-items:center;gap:6px;
   }
-  .save-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(124,58,237,0.35);}
+  .save-btn:active{transform:scale(0.95);}
   .save-status{font-size:0.78rem;font-weight:600;color:#22c55e;opacity:0;transition:opacity 0.3s;}
   .save-status.visible{opacity:1;}
   
@@ -434,10 +405,12 @@
     display: flex; align-items: center; gap: 14px; padding: 12px 10px;
     border-radius: 12px; background: rgba(0,0,0,0.03);
     border: 1px solid rgba(0,0,0,0.05); margin-bottom: 8px;
-    transition: background 0.2s, transform 0.2s; cursor: pointer;
+    transition: background 0.2s; cursor: pointer;
   }
   html.dark .holiday-item { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.06); }
-  .holiday-item:hover { background: var(--glass-bg); transform: translateX(4px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .holiday-item:active { background: rgba(0,0,0,0.08); transform: scale(0.98); }
+  html.dark .holiday-item:active { background: rgba(255,255,255,0.1); }
+  
   .h-date-badge {
     min-width: 52px; text-align: center; padding: 8px 6px; border-radius: 12px;
     font-family: 'DM Sans', sans-serif; font-weight: 800; font-size: 1.1rem;
@@ -478,8 +451,8 @@
   #bday-overlay {
     position: fixed; inset: 0; z-index: 2000;
     display: flex; align-items: center; justify-content: center; flex-direction: column;
-    background: rgba(0,0,0,0.85); backdrop-filter: blur(15px);
-    opacity: 0; pointer-events: none; transition: opacity 0.5s;
+    background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
+    opacity: 0; pointer-events: none; transition: opacity 0.3s;
     text-align: center; color: white;
   }
   #bday-overlay.open { opacity: 1; pointer-events: all; }
@@ -490,10 +463,7 @@
     animation: bdayBounce 1s infinite alternate; margin-bottom: 10px;
   }
   .bday-subtitle { font-size: 1.2rem; font-weight: 600; opacity: 0.9; margin-bottom: 30px; }
-  @keyframes bdayBounce {
-    0% { transform: scale(1); }
-    100% { transform: scale(1.1); }
-  }
+  @keyframes bdayBounce { 0% { transform: scale(1); } 100% { transform: scale(1.05); } }
   
   @media(max-width:480px){
     .title-main{font-size:1.5rem;}
@@ -508,12 +478,10 @@
 </head>
 <body>
 
-<!-- Liquid Background -->
-<div class="liquid-bg">
-  <div class="blob blob1"></div>
-  <div class="blob blob2"></div>
-  <div class="blob blob3"></div>
-  <div class="blob blob4"></div>
+<!-- Splash Loader (Prevents Login Screen Flash) -->
+<div id="splash-screen">
+  <div class="spinner"></div>
+  <div style="margin-top: 15px; font-weight: 700; color: var(--text-secondary);">Loading...</div>
 </div>
 
 <!-- Special Birthday Celebration Overlay -->
@@ -526,7 +494,7 @@
 
 <!-- Authentication Screen -->
 <div id="auth-screen">
-  <div class="glass-panel auth-box">
+  <div class="auth-box">
     <h2 id="auth-title" style="font-family:'Playfair Display',serif; font-size:2rem; font-weight:800; color:var(--text-primary); margin-bottom: 5px;">Welcome Back</h2>
     <p id="auth-subtitle" style="font-size:0.85rem; color:var(--text-secondary); margin-bottom: 20px;">Please login to view calendar</p>
     
@@ -580,7 +548,7 @@
   </div>
 </div>
 
-<!-- Main App Wrapper (Hidden initially) -->
+<!-- Main App Wrapper -->
 <div id="app-wrapper">
   
   <!-- Sidebar Overlay -->
@@ -885,27 +853,39 @@ const BASE_HOLIDAYS = {
 };
 
 // ============================================================
-// AUTHENTICATION LOGIC
+// AUTHENTICATION LOGIC (Splash Screen Integrated)
 // ============================================================
 auth.onAuthStateChanged(user => {
+  const splash = document.getElementById('splash-screen');
+  const authScreen = document.getElementById('auth-screen');
+  const appWrap = document.getElementById('app-wrapper');
+
   if (user) {
     isAdmin = (user.email === 'energymeter20@gmail.com');
 
     if(user.emailVerified || isAdmin) { 
-      document.getElementById('auth-screen').style.display = 'none';
-      document.getElementById('app-wrapper').style.display = 'block';
+      // User Valid -> Show App
+      splash.style.display = 'none';
+      authScreen.style.display = 'none';
+      appWrap.style.display = 'block';
+      
       document.getElementById('userEmailDisplay').textContent = user.email;
       initApp();
     } else {
-      document.getElementById('auth-screen').style.display = 'flex';
-      document.getElementById('app-wrapper').style.display = 'none';
+      // Unverified -> Show Auth Screen
+      splash.style.display = 'none';
+      appWrap.style.display = 'none';
+      authScreen.style.display = 'flex';
+      
       document.getElementById('auth-error').innerText = "Please click the Verification Link sent to your email, and then Login.";
       auth.signOut();
     }
   } else {
+    // Logged Out -> Show Auth Screen
     isAdmin = false;
-    document.getElementById('auth-screen').style.display = 'flex';
-    document.getElementById('app-wrapper').style.display = 'none';
+    splash.style.display = 'none';
+    appWrap.style.display = 'none';
+    authScreen.style.display = 'flex';
   }
 });
 
@@ -961,7 +941,7 @@ async function handleAuth() {
       errorDiv.innerText = "";
       successDiv.innerText = "Account created! A Verification Link has been sent to your email. Please verify to Login.";
       
-      // Save User Data (Name, Gender, Mobile, DOB)
+      // Save User Data
       await db.collection('users').doc(cred.user.uid).set({
         firstName: fname,
         lastName: lname,
@@ -1044,17 +1024,14 @@ async function loadUserProfile() {
 
 function checkBirthdayToday() {
   if (!currentUserProfile || !currentUserProfile.dob) return;
-  // Check if we already wished them this session
   if (sessionStorage.getItem('bday_wished_today') === 'true') return;
 
   const today = new Date();
   const todayMMDD = String(today.getMonth() + 1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
   
-  // dob format is usually YYYY-MM-DD
   const userMMDD = currentUserProfile.dob.substring(5); 
 
   if (todayMMDD === userMMDD) {
-    // Show Birthday Overlay
     document.getElementById('bday-msg').innerText = `Happy Birthday, ${currentUserProfile.firstName}!`;
     document.getElementById('bday-overlay').classList.add('open');
     fireConfetti();
@@ -1069,7 +1046,6 @@ function closeBirthdayOverlay() {
 }
 
 function openProfileModal() {
-  // Show Admin Badge if applicable
   document.getElementById('adminBadge').style.display = isAdmin ? 'block' : 'none';
   document.getElementById('profileModal').classList.add('open');
 }
@@ -1113,7 +1089,7 @@ async function saveProfileData() {
     document.getElementById('sidebarProfileName').innerText = fname + ' ' + lname;
     document.getElementById('sidebarProfilePic').src = newPhoto;
     
-    renderCalendar(); // Re-render in case DOB changed
+    renderCalendar(); 
     
     const s = document.getElementById('profileSaveStatus');
     s.classList.add('visible');
@@ -1142,7 +1118,7 @@ async function addFamilyBirthday() {
     document.getElementById('fbName').value = '';
     document.getElementById('fbDob').value = '';
     renderFamilyBirthdaysUI();
-    renderCalendar(); // Update calendar markers
+    renderCalendar(); 
   } catch(e) { alert("Error adding birthday: " + e.message); }
 }
 
@@ -1172,7 +1148,6 @@ function renderFamilyBirthdaysUI() {
 
   let html = '';
   arr.forEach(b => {
-    // Format date beautifully
     const d = new Date(b.dob);
     const dateStr = d.toLocaleDateString('en-IN', {day:'numeric', month:'short'});
     html += `
@@ -1193,7 +1168,7 @@ function renderFamilyBirthdaysUI() {
 // ADMIN LOGIC (App Owner Access)
 // ============================================================
 async function saveAdminHoliday() {
-  if(!isAdmin) return; // double check
+  if(!isAdmin) return; 
   
   const typeEle = document.querySelector('input[name="holType"]:checked');
   const type = typeEle ? typeEle.value : 'None';
@@ -1318,23 +1293,21 @@ function renderCalendar() {
     const isToday = date.toDateString() === TODAY.toDateString();
     const wknd = isWeekend(date);
 
-    // Birthday Logic Check
+    // Birthday Logic
     let isBday = false;
     let bdayNameStr = "";
-    const renderMMDD = dateStr.substring(5); // e.g. "07-03"
+    const renderMMDD = dateStr.substring(5); 
     
     if (currentUserProfile) {
-        // User's own birthday
         if (currentUserProfile.dob && currentUserProfile.dob.endsWith(renderMMDD)) {
             isBday = true;
             bdayNameStr += `<div>🎂 My B'day</div>`;
         }
-        // Family/Friends Birthdays
         if (currentUserProfile.familyBirthdays) {
             currentUserProfile.familyBirthdays.forEach(fb => {
                 if (fb.dob && fb.dob.endsWith(renderMMDD)) {
                     isBday = true;
-                    bdayNameStr += `<div>🎈 ${fb.name}'s B'day</div>`;
+                    bdayNameStr += `<div>🎈 ${fb.name}</div>`;
                 }
             });
         }
@@ -1342,7 +1315,7 @@ function renderCalendar() {
 
     let cls = 'cal-cell ';
     if (isToday) cls += 'today-cell ';
-    else if (isBday) cls += 'bday-cell '; // Highlight birthday strongly
+    else if (isBday) cls += 'bday-cell '; 
     else if (hd?.type === 'GH') cls += 'gh-cell ';
     else if (hd?.type === 'RH') cls += 'rh-cell ';
     else cls += 'regular ';
@@ -1352,13 +1325,11 @@ function renderCalendar() {
     if(hd?.type === 'GH') specialDotsHtml += `<div class="special-dot" style="background:#ef4444;color:#ef4444;"></div>`;
     if(hd?.type === 'RH') specialDotsHtml += `<div class="special-dot" style="background:#3b82f6;color:#3b82f6;"></div>`;
 
-    // Construct name block: show holiday name OR birthday name OR both
     let nameHtml = '';
     if (bdayNameStr) {
       nameHtml += `<div class="holiday-name">${bdayNameStr}</div>`;
     }
     if (hd) {
-       // If there's a holiday, show it. (If there's also a bday, it stacks)
        nameHtml += `<div class="holiday-name" style="${isBday ? 'margin-top:2px; font-size:0.55rem; color:var(--text-secondary); font-weight:600;' : ''}">${hd.name}</div>`;
     }
 
@@ -1377,35 +1348,38 @@ function formatDateStr(y, m, d) {
 }
 
 // ============================================================
-// DIRECT NAVIGATION FROM LIST TO CALENDAR
+// TOUCH SWIPE NAVIGATION (Optimized)
 // ============================================================
 function jumpToDateAndOpen(dateStr) {
   closeHolidayListModal();
   const [y, m, d] = dateStr.split('-').map(Number);
   currentYear = y;
   currentMonth = m - 1;
-  renderCalendar(); // Renders the target month
-  openDateModal(dateStr); // Opens the specific date modal
+  renderCalendar(); 
+  openDateModal(dateStr); 
 }
 
 function changeMonth(dir) {
   const wrapper = document.getElementById('calWrapper');
   if (getSetting('animations',true)) {
-    wrapper.style.transition = 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s';
-    wrapper.style.transform = `translateX(${dir > 0 ? '-80px' : '80px'})`;
+    wrapper.style.transition = 'transform 0.15s ease-out, opacity 0.15s';
+    wrapper.style.transform = `translateX(${dir > 0 ? '-40px' : '40px'})`;
     wrapper.style.opacity = '0';
+    
     setTimeout(() => {
       currentMonth += dir;
       if (currentMonth > 11) { currentMonth = 0; currentYear++; }
       if (currentMonth < 0) { currentMonth = 11; currentYear--; }
       renderCalendar();
+      
       wrapper.style.transition = 'none';
-      wrapper.style.transform = `translateX(${dir > 0 ? '80px' : '-80px'})`;
-      void wrapper.offsetWidth;
-      wrapper.style.transition = 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s';
+      wrapper.style.transform = `translateX(${dir > 0 ? '40px' : '-40px'})`;
+      void wrapper.offsetWidth; // force reflow
+      
+      wrapper.style.transition = 'transform 0.2s ease-out, opacity 0.2s';
       wrapper.style.transform = 'translateX(0)';
       wrapper.style.opacity = '1';
-    }, 250);
+    }, 150);
   } else {
     currentMonth += dir;
     if (currentMonth > 11) { currentMonth = 0; currentYear++; }
@@ -1418,11 +1392,30 @@ function jumpToToday() {
   currentMonth = TODAY.getMonth();
   currentYear = TODAY.getFullYear();
   renderCalendar();
-  setTimeout(() => {
-    const cells = document.querySelectorAll('.today-cell');
-    cells.forEach(c => { c.classList.add('bouncing'); setTimeout(()=>c.classList.remove('bouncing'),700); });
-  }, 100);
 }
+
+// Robust Swipe Logic
+let touchStartX = 0;
+let touchStartY = 0;
+const calGrid = document.getElementById('calWrapper');
+
+calGrid.addEventListener('touchstart', e => {
+  touchStartX = e.changedTouches[0].screenX;
+  touchStartY = e.changedTouches[0].screenY;
+}, {passive: true});
+
+calGrid.addEventListener('touchend', e => {
+  const touchEndX = e.changedTouches[0].screenX;
+  const touchEndY = e.changedTouches[0].screenY;
+  
+  const dx = touchEndX - touchStartX;
+  const dy = touchEndY - touchStartY;
+  
+  // If horizontal swipe is larger than vertical scroll and distance is enough
+  if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+    changeMonth(dx < 0 ? 1 : -1);
+  }
+}, {passive: true});
 
 // ============================================================
 // DATE MODAL & PERSONAL NOTES (Firebase)
@@ -1441,7 +1434,6 @@ async function openDateModal(dateStr) {
   else if (wknd) grad = 'linear-gradient(135deg,#ea580c,#c2410c)';
   else if (isToday) grad = 'linear-gradient(135deg,#16a34a,#15803d)';
 
-  // Check if it's a birthday 
   let isBday = false;
   const renderMMDD = dateStr.substring(5);
   if (currentUserProfile) {
@@ -1520,8 +1512,7 @@ async function saveNote() {
   const note = document.getElementById('dmNotes').value;
   try {
     await db.collection('users').doc(user.uid).collection('calendar_notes').doc(currentDateStr).set({
-      note, 
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      note, updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     }, {merge: true});
     
     const s = document.getElementById('saveStatus');
@@ -1599,10 +1590,12 @@ function fireConfetti() {
   }
 }
 
-// System theme watcher
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
   if (getSetting('theme','system') === 'system') setTheme('system');
 });
 </script>
 </body>
 </html>
+
+
+```
